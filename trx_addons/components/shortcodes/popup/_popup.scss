@@ -1,0 +1,26 @@
+.sc_popup {
+	display: none;
+	background-color:#fff;
+	@include box-shadow(0 0 20px 0 rgba(0, 0, 0, 0.2));
+
+	& > p {
+		margin: 0;
+	}
+	.wp-video {
+		width: 100% !important;
+	}
+}
+.mfp-content .sc_popup {
+	display:block;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 75vh;
+}
+.mfp-inline-holder div.mfp-content,
+.mfp-ajax-holder div.mfp-content {
+	width: auto;
+	min-width: 60%;
+	max-width: 85%;
+	min-height: 40%;
+	max-height: 80%;
+}

@@ -1,0 +1,40 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: QuickCal\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-25 20:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.3.1\n"
+"X-Domain: quickcal"
+
+#. URI of the plugin
+msgid "https://quickcal.co"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://quickcal.co/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Powerful appointment booking made simple."
+msgstr ""
+
+#. Name of the plugin
+#. Author of the plugin
+msgid "QuickCal"
+msgstr ""
+
+#: quickcal.php:289
+msgid ""
+"QuickCal is a replacement for the outdated Booked plugin. You can safely "
+"deactivate & uninstall Booked."
+msgstr ""
