@@ -1,0 +1,54 @@
+/* Estilos para el modal */
+.custom-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 9000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(220, 170, 37, 0.4);
+}
+
+.custom-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    text-align: center;
+}
+
+.custom-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.custom-modal-close:hover,
+.custom-modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.custom-modal-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Clase para bloquear el scroll */
+body.modal-open {
+    overflow: hidden;
+    position: fixed; /* Bloquea el scroll incluso con header flotante */
+    width: 100%; /* Asegura que no haya desplazamiento lateral */
+}
+
+
+.custom-modal .custom-modal-content h4 {
+    margin: 0;
+    padding: 0;
+}

@@ -4,22 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6
+class ComposerStaticInit13fcaf83d5496a4fa4e35c9150f0d908
 {
     public static $prefixLengthsPsr4 = array (
         'M' => 
         array (
-            'MercadoPago\\Woocommerce\\Tests\\' => 30,
             'MercadoPago\\Woocommerce\\' => 24,
             'MercadoPago\\PP\\Sdk\\' => 19,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'MercadoPago\\Woocommerce\\Tests\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/tests',
-        ),
         'MercadoPago\\Woocommerce\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -31,6 +26,7 @@ class ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'MercadoPago\\Woocommerce\\Admin\\Settings' => __DIR__ . '/../..' . '/src/Admin/Settings.php',
         'MercadoPago\\Woocommerce\\Blocks\\AbstractBlock' => __DIR__ . '/../..' . '/src/Blocks/AbstractBlock.php',
         'MercadoPago\\Woocommerce\\Blocks\\BasicBlock' => __DIR__ . '/../..' . '/src/Blocks/BasicBlock.php',
@@ -139,9 +135,9 @@ class ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit278302d3ce1a1fc11f0539ad7cf127a6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit13fcaf83d5496a4fa4e35c9150f0d908::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit13fcaf83d5496a4fa4e35c9150f0d908::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit13fcaf83d5496a4fa4e35c9150f0d908::$classMap;
 
         }, null, ClassLoader::class);
     }

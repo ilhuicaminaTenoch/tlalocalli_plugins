@@ -4,7 +4,7 @@ Tags: ecommerce, mercadopago, woocommerce
 Requires at least: 6.3
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 7.6.2
+Stable tag: 7.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,10 +136,8 @@ Check out our <a href="https://www.mercadopago.com.br/developers/pt/plugins_sdks
 
 == Changelog ==
 
-* Added:
-- Added validation on user permissions to download plugin logs.
-- Increased plugin wordpress tested version to the latest available.
 * Fix:
-- Addressed an issue where discount and commission calculations were not being shown correctly on order details.
+- Fix the size of the card logos at checkout.
+- Fix the problem of not showing the disclaimer about card fees for some countries.
 
 [See changelog for all versions](https://github.com/mercadopago/cart-woocommerce/blob/main/CHANGELOG.md).
