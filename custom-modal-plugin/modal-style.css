@@ -2,12 +2,12 @@
 .custom-modal {
     display: none; /* Oculto por defecto */
     position: fixed;
-    z-index: 9000;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(220, 170, 37, 0.4);
+    background-color: rgba(220, 170, 37, 0.8); /* Color dcaa25 con 80% de opacidad */
 }
 
 .custom-modal-content {
@@ -17,6 +17,7 @@
     border: 1px solid #888;
     width: 80%;
     text-align: center;
+    position: relative;
 }
 
 .custom-modal-close {
@@ -40,12 +41,36 @@
     cursor: pointer;
 }
 
+/* Estilos para el footer del modal */
+.custom-modal-footer {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    text-align: center;
+    font-size: 14px;
+}
+
+.custom-modal-footer p {
+    margin: 0;
+}
+
+.custom-modal-footer a {
+    color: #dcaa25;
+    text-decoration: none;
+}
+
+.custom-modal-footer a:hover {
+    text-decoration: underline;
+}
+
 /* Clase para bloquear el scroll */
 body.modal-open {
     overflow: hidden;
     position: fixed; /* Bloquea el scroll incluso con header flotante */
     width: 100%; /* Asegura que no haya desplazamiento lateral */
 }
+
 
 
 .custom-modal .custom-modal-content h4 {
