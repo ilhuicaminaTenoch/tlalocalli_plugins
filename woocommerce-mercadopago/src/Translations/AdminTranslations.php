@@ -10,115 +10,51 @@ if (!defined('ABSPATH')) {
 
 class AdminTranslations
 {
-    /**
-     * @var array
-     */
-    public $notices = [];
+    public array $notices = [];
 
-    /**
-     * @var array
-     */
-    public $plugin = [];
+    public array $plugin = [];
 
-    /**
-     * @var array
-     */
-    public $order = [];
+    public array $order = [];
 
-    /**
-     * @var array
-     */
-    public $headerSettings = [];
+    public array $headerSettings = [];
 
-    /**
-     * @var array
-     */
-    public $credentialsSettings = [];
+    public array $credentialsSettings = [];
 
-    /**
-     * @var array
-     */
-    public $supportSettings = [];
+    public array $supportSettings = [];
 
-    /**
-     * @var array
-     */
-    public $storeSettings = [];
+    public array $storeSettings = [];
 
-    /**
-     * @var array
-     */
-    public $gatewaysSettings = [];
+    public array $gatewaysSettings = [];
 
-    /**
-     * @var array
-     */
-    public $basicGatewaySettings = [];
+    public array $basicGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $creditsGatewaySettings = [];
+    public array $creditsGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $customGatewaySettings = [];
+    public array $customGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $ticketGatewaySettings = [];
+    public array $ticketGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $pseGatewaySettings = [];
+    public array $pseGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $pixGatewaySettings = [];
+    public array $pixGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $testModeSettings = [];
+    public array $yapeGatewaySettings = [];
 
-    /**
-     * @var array
-     */
-    public $configurationTips = [];
+    public array $testModeSettings = [];
 
-    /**
-     * @var array
-     */
-    public $validateCredentials = [];
+    public array $configurationTips = [];
 
-    /**
-     * @var array
-     */
-    public $updateCredentials = [];
+    public array $validateCredentials = [];
 
-    /**
-     * @var array
-     */
-    public $updateStore = [];
+    public array $updateCredentials = [];
 
-    /**
-     * @var array
-     */
-    public $currency = [];
+    public array $updateStore = [];
 
-    /**
-     * @var array
-     */
-    public $statusSync = [];
+    public array $currency = [];
 
-    /**
-     * @var array
-     */
-    public $links;
+    public array $statusSync = [];
+
+    public array $links;
 
     /**
      * Translations constructor
@@ -143,6 +79,7 @@ class AdminTranslations
         $this->setTicketGatewaySettingsTranslations();
         $this->setPseGatewaySettingsTranslations();
         $this->setPixGatewaySettingsTranslations();
+        $this->setYapeGatewaySettingsTranslations();
         $this->setTestModeSettingsTranslations();
         $this->setConfigurationTipsTranslations();
         $this->setUpdateCredentialsTranslations();
@@ -506,13 +443,13 @@ class AdminTranslations
     {
         $descriptionEnabled = sprintf(
             '%s <b>%s</b>.',
-            __('“Up to 12 installments without cards through Mercado Credito” is', 'woocommerce-mercadopago'),
+            __('“Up to 12 installments without cards through Mercado Pago” is', 'woocommerce-mercadopago'),
             __('enabled', 'woocommerce-mercadopago')
         );
 
         $descriptionDisabled = sprintf(
             '%s <b>%s</b>.',
-            __('“Up to 12 installments without cards through Mercado Credito” is', 'woocommerce-mercadopago'),
+            __('“Up to 12 installments without cards through Mercado Pago” is', 'woocommerce-mercadopago'),
             __('disabled', 'woocommerce-mercadopago')
         );
 
@@ -529,12 +466,12 @@ class AdminTranslations
         );
 
         $this->creditsGatewaySettings = [
-            'gateway_title'                             => __('Installments without cards through Mercado Credito', 'woocommerce-mercadopago'),
+            'gateway_title'                             => __('Installments without cards through Mercado Pago', 'woocommerce-mercadopago'),
             'gateway_description'                       => __('Your customers finish their payments on Mercado Pago.', 'woocommerce-mercadopago'),
             'gateway_method_title'                      => __('Mercado Pago - Checkout Pro', 'woocommerce-mercadopago'),
             'gateway_method_description'                => __('Your customers finish their payments on Mercado Pago.', 'woocommerce-mercadopago'),
-            'header_title'                              => __('Up to 12 installments without cards through Mercado Credito', 'woocommerce-mercadopago'),
-            'header_description'                        => __('With this alternative, you\'ll be able to sell in installments without cards and receive the money immediately with the same fees as with credit cards. Your sales are protected and guaranteed by Mercado Pago.', 'woocommerce-mercadopago'),
+            'header_title'                              => __('Up to 12 installments without cards through Mercado Pago', 'woocommerce-mercadopago'),
+            'header_description'                        => __('With this alternative, you’ll be able to sell in installments without cards and receive the money immediately with the same fees as with credit cards. Your sales are protected and guaranteed by Mercado Pago.', 'woocommerce-mercadopago'),
             'card_settings_title'                       => __('Mercado Pago plugin general settings', 'woocommerce-mercadopago'),
             'card_settings_subtitle'                    => __('Set the deadlines and fees, test your store or access the Plugin manual.', 'woocommerce-mercadopago'),
             'card_settings_button_text'                 => __('Go to Settings', 'woocommerce-mercadopago'),
@@ -554,8 +491,8 @@ class AdminTranslations
             'currency_conversion_subtitle'              => __('Activate this option so that the value of the currency set in WooCommerce is compatible with the value of the currency you use in Mercado Pago.', 'woocommerce-mercadopago'),
             'currency_conversion_descriptions_enabled'  => $currencyConversionDescriptionsEnabled,
             'currency_conversion_descriptions_disabled' => $currencyConversionDescriptionsDisabled,
-            'credits_banner_title'                      => __('Promote the payment of your products with Mercado Credito', 'woocommerce-mercadopago'),
-            'credits_banner_subtitle'                   => __('Activate this promotional banner to offer the option of paying in installments without cards through Mercado Credito within product pages.', 'woocommerce-mercadopago'),
+            'credits_banner_title'                      => __('Promote the payment of your products with Mercado Pago', 'woocommerce-mercadopago'),
+            'credits_banner_subtitle'                   => __('Activate this promotional banner to offer the option of paying in installments without cards through Mercado Pago within product pages.', 'woocommerce-mercadopago'),
             'credits_banner_descriptions_enabled'       => $descriptionEnabled,
             'credits_banner_descriptions_disabled'      => $descriptionDisabled,
             'credits_banner_desktop'                    => __('Banner on the product page | Computer version', 'woocommerce-mercadopago'),
@@ -572,7 +509,7 @@ class AdminTranslations
             'commission_title'                          => __('Commission in Mercado Pago Checkouts', 'woocommerce-mercadopago'),
             'commission_description'                    => __('Choose an additional percentage value that you want to charge as commission to your customers for paying with Mercado Pago.', 'woocommerce-mercadopago'),
             'commission_checkbox_label'                 => __('Activate and show this information on Mercado Pago Checkout', 'woocommerce-mercadopago'),
-            'tooltip_component_title'                   => __('Choose how to promote Mercado Credito on your store', 'woocommerce-mercadopago'),
+            'tooltip_component_title'                   => __('Choose how to promote “Pagos sin Tarjeta de Mercado Pago” on your store', 'woocommerce-mercadopago'),
             'tooltip_component_desc'                    => __('You can only select one alternative and you may edit it whenever you want.', 'woocommerce-mercadopago'),
             'tooltip_component_example'                 => __('Example:', 'woocommerce-mercadopago')
         ];
@@ -588,26 +525,26 @@ class AdminTranslations
     private function setCreditsTooltipSelectionTranslations(): array
     {
         $tooltipComponentOption1 = sprintf(
-            '<b>%s</b> %s.',
+            '<b>%s</b> %s',
             __('Up to 12 installments without cards', 'woocommerce-mercadopago'),
-            __('through Mercado Credito. Learn more', 'woocommerce-mercadopago')
+            __('through Mercado Pago. Learn more', 'woocommerce-mercadopago')
         );
 
         $tooltipComponentOption2 = sprintf(
-            '<b>%s</b> %s.',
+            '<b>%s</b> %s',
             __('Buy now, pay later', 'woocommerce-mercadopago'),
-            __('through Mercado Credito. Learn more', 'woocommerce-mercadopago')
+            __('through Mercado Pago. Learn more', 'woocommerce-mercadopago')
         );
 
         $tooltipComponentOption3 = sprintf(
             '%s <b>%s</b>. %s',
-            __('With Mercado Credito,', 'woocommerce-mercadopago'),
+            __('With Mercado Pago,', 'woocommerce-mercadopago'),
             __('get it now and pay month by month', 'woocommerce-mercadopago'),
             __(' Learn more', 'woocommerce-mercadopago')
         );
 
         $tooltipComponentOption4 = sprintf(
-            '<b>%s</b> %s.',
+            '<b>%s</b> %s',
             __('Pay in up to 12 installments', 'woocommerce-mercadopago'),
             __('without credit card. Learn more', 'woocommerce-mercadopago')
         );
@@ -939,6 +876,74 @@ class AdminTranslations
             'steps_link_title_one'                      => __('click here.', 'woocommerce-mercadopago'),
         ];
         $this->pixGatewaySettings  = array_merge($this->pixGatewaySettings, $this->setSupportLinkTranslations());
+    }
+
+    /**
+     * Set yape settings translations
+     *
+     * @return void
+     */
+    private function setYapeGatewaySettingsTranslations(): void
+    {
+        $enabledDescriptionsEnabled = sprintf(
+            '%s <b>%s</b> %s.',
+            __('Checkout API is', 'woocommerce-mercadopago'),
+            __('active', 'woocommerce-mercadopago'),
+            __('for payments with Yape', 'woocommerce-mercadopago'),
+        );
+
+        $enabledDescriptionsDisabled = sprintf(
+            '%s <b>%s</b> %s.',
+            __('Checkout API is', 'woocommerce-mercadopago'),
+            __('disabled', 'woocommerce-mercadopago'),
+            __('for payments with Yape', 'woocommerce-mercadopago'),
+        );
+
+        $currencyConversionDescriptionsEnabled = sprintf(
+            '%s <b>%s</b>.',
+            __('Currency conversion is', 'woocommerce-mercadopago'),
+            __('enabled', 'woocommerce-mercadopago')
+        );
+
+        $currencyConversionDescriptionsDisabled = sprintf(
+            '%s <b>%s</b>.',
+            __('Currency conversion is', 'woocommerce-mercadopago'),
+            __('disabled', 'woocommerce-mercadopago')
+        );
+
+
+        $this->yapeGatewaySettings = [
+            'gateway_title'                             => __('Yape', 'woocommerce-mercadopago'),
+            'gateway_description'                       => __('Payments without leaving your store with our customizable checkout.', 'woocommerce-mercadopago'),
+            'gateway_method_title'                      => __('Mercado Pago - Checkout API', 'woocommerce-mercadopago'),
+            'gateway_method_description'                => __('Payments without leaving your store with our customizable checkout.', 'woocommerce-mercadopago'),
+            'header_title'                              => __('Checkout API | Yape', 'woocommerce-mercadopago'),
+            'header_description'                        => __('Receive payments through the Yape app automatically, without redirects, and with all the security of Mercado Pago. ', 'woocommerce-mercadopago'),
+            'card_settings_title'                       => __('Mercado Pago plugin general settings', 'woocommerce-mercadopago'),
+            'card_settings_subtitle'                    => __('Set the deadlines and fees, test your store or access the Plugin manual.', 'woocommerce-mercadopago'),
+            'card_settings_button_text'                 => __('Go to Settings', 'woocommerce-mercadopago'),
+            'enabled_title'                             => __('Enable the checkout', 'woocommerce-mercadopago'),
+            'enabled_subtitle'                          => __('By disabling it, you will disable Yape from the Mercado Pago Checkout API.', 'woocommerce-mercadopago'),
+            'enabled_descriptions_enabled'              => $enabledDescriptionsEnabled,
+            'enabled_descriptions_disabled'             => $enabledDescriptionsDisabled,
+            'title_title'                               => __('Title in the website’s checkout', 'woocommerce-mercadopago'),
+            'title_description'                         => __('Enter a title and a description for Yape in your Checkout API , maximum characters: 85', 'woocommerce-mercadopago'),
+            'title_default'                             => __('Yape', 'woocommerce-mercadopago'),
+            'title_desc_tip'                            => __('The text inserted here will not be translated to other languages', 'woocommerce-mercadopago'),
+            'currency_conversion_title'                 => __('Convert Currency', 'woocommerce-mercadopago'),
+            'currency_conversion_subtitle'              => __('Activate this option so that the value of the currency set in WooCommerce is compatible with the value of the currency you use in Mercado Pago.', 'woocommerce-mercadopago'),
+            'currency_conversion_descriptions_enabled'  => $currencyConversionDescriptionsEnabled,
+            'currency_conversion_descriptions_disabled' => $currencyConversionDescriptionsDisabled,
+            'advanced_configuration_title'              => __('Advanced settings', 'woocommerce-mercadopago'),
+            'advanced_configuration_subtitle'           => __('Edit these advanced fields only when you want to modify the preset values.', 'woocommerce-mercadopago'),
+            'discount_title'                            => __('Discount in Mercado Pago Checkouts', 'woocommerce-mercadopago'),
+            'discount_description'                      => __('Choose a percentage value that you want to discount your customers for paying with Mercado Pago.', 'woocommerce-mercadopago'),
+            'discount_checkbox_label'                   => __('Activate and show this information on Mercado Pago Checkout', 'woocommerce-mercadopago'),
+            'commission_title'                          => __('Commission in Mercado Pago Checkouts', 'woocommerce-mercadopago'),
+            'commission_description'                    => __('Choose an additional percentage value that you want to charge as commission to your customers for paying with Mercado Pago.', 'woocommerce-mercadopago'),
+            'commission_checkbox_label'                 => __('Activate and show this information on Mercado Pago Checkout', 'woocommerce-mercadopago'),
+        ];
+        $this->yapeGatewaySettings  = array_merge($this->yapeGatewaySettings, $this->setSupportLinkTranslations());
     }
 
     /**

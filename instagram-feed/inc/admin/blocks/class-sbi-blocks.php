@@ -76,7 +76,7 @@ class SB_Instagram_Blocks {
 	public function enqueue_block_editor_assets() {
 		$db = sbi_get_database_settings();
 
-		sb_instagram_scripts_enqueue();
+		sb_instagram_scripts_enqueue(true);
 
 		wp_enqueue_style( 'sbi-blocks-styles' );
 		wp_enqueue_script(

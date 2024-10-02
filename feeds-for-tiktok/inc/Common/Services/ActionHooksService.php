@@ -18,6 +18,8 @@ class ActionHooksService extends ServiceProvider
 		add_action('sbtt_enqueue_scripts', array( $this, 'register_scripts' ));
 		add_action('wp_enqueue_scripts', array( $this, 'register_scripts' ));
 		add_action('wp_enqueue_scripts', array( $this, 'set_script_translations' ), 11);
+
+		add_action('wpcode_loaded', array($this, 'register_username'));
 	}
 
 	/**
@@ -104,5 +106,19 @@ class ActionHooksService extends ServiceProvider
 	public function set_script_translations()
 	{
 		wp_set_script_translations('sbtt-tiktok-feed', 'feeds-for-tiktok', SBTT_PLUGIN_DIR . 'languages/');
+	}
+
+	/**
+	 * Register the username for the WPCode snippets.
+	 *
+	 * @return void
+	 */
+	public function register_username()
+	{
+		if (!function_exists('wpcode_register_library_username')) {
+			return;
+		}
+
+		wpcode_register_library_username('smashballoon', 'Smash Balloon');
 	}
 }

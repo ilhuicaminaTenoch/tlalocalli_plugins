@@ -68,6 +68,10 @@ function sbtt_feed_settings_defaults()
 		'carouselShowArrows'          => false,
 		'carouselShowPagination'      => true,
 		'carouselEnableAutoplay'      => true,
+		// Gallery.
+		'galleryDesktopColumns'       => 3,
+		'galleryTabletColumns'        => 2,
+		'galleryMobileColumns'        => 1,
 
 		// Header.
 		'showHeader'                  => true,

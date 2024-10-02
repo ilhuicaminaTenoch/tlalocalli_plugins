@@ -2,6 +2,7 @@
 
 namespace MercadoPago\Woocommerce\Gateways;
 
+use Exception;
 use MercadoPago\Woocommerce\Exceptions\ResponseStatusException;
 use MercadoPago\Woocommerce\Exceptions\RejectedPaymentException;
 use MercadoPago\Woocommerce\Helpers\Form;
@@ -41,6 +42,7 @@ class PixGateway extends AbstractGateway
 
     /**
      * PixGateway constructor
+     * @throws Exception
      */
     public function __construct()
     {
@@ -167,6 +169,7 @@ class PixGateway extends AbstractGateway
      */
     public function getPaymentFieldsParams(): array
     {
+        $amountAndCurrencyRatio = $this->getAmountAndCurrency();
         return [
             'test_mode'                        => $this->mercadopago->storeConfig->isTestMode(),
             'test_mode_title'                  => $this->storeTranslations['test_mode_title'],
@@ -178,7 +181,8 @@ class PixGateway extends AbstractGateway
             'terms_and_conditions_description' => $this->storeTranslations['terms_and_conditions_description'],
             'terms_and_conditions_link_text'   => $this->storeTranslations['terms_and_conditions_link_text'],
             'terms_and_conditions_link_src'    => $this->links['mercadopago_terms_and_conditions'],
-            'fee_title'                        => $this->getFeeTitle(),
+            'amount'                           => $amountAndCurrencyRatio['amount'],
+            'message_error_amount'             => $this->storeTranslations['message_error_amount'],
         ];
     }
 
@@ -205,7 +209,7 @@ class PixGateway extends AbstractGateway
 
             if (!filter_var($order->get_billing_email(), FILTER_VALIDATE_EMAIL)) {
                 return $this->processReturnFail(
-                    new \Exception('Email not valid on ' . __METHOD__),
+                    new Exception('Email not valid on ' . __METHOD__),
                     $this->mercadopago->storeTranslations->buyerRefusedMessages['buyer_default'],
                     self::LOG_SOURCE,
                     (array) $order
@@ -220,7 +224,7 @@ class PixGateway extends AbstractGateway
             }
 
             throw new ResponseStatusException('exception : Unable to process payment on ' . __METHOD__);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->processReturnFail(
                 $e,
                 $e->getMessage(),
@@ -238,6 +242,8 @@ class PixGateway extends AbstractGateway
      * @param $order
      *
      * @return array
+     * @throws RejectedPaymentException
+     * @throws ResponseStatusException
      */
     private function verifyPixPaymentResponse($response, $order): array
     {

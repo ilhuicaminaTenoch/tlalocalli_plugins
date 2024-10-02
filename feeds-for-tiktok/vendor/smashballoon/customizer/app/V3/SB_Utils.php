@@ -2,21 +2,18 @@
 
 namespace Smashballoon\Customizer\V3;
 
-
 /**
  * Class SB Utils
  * Class to create
  *
  * @since 1.0
  */
-
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+    exit;
+    // Exit if accessed directly
 }
-
 class SB_Utils
 {
-
     /**
      * Get All Icons Array
      *
@@ -35,7 +32,6 @@ class SB_Utils
         }
         return $icons;
     }
-
     /**
      * Get WP Pages List
      *
@@ -49,18 +45,11 @@ class SB_Utils
         $pagesResult = array();
         if (is_array($pagesList)) {
             foreach ($pagesList as $page) {
-                array_push(
-                    $pagesResult,
-                    array(
-                        'id' => $page->ID,
-                        'title' => $page->post_title,
-                    )
-                );
+                array_push($pagesResult, array('id' => $page->ID, 'title' => $page->post_title));
             }
         }
         return $pagesResult;
     }
-
     /**
      * Is Production
      *
@@ -70,6 +59,6 @@ class SB_Utils
      */
     public static function is_production()
     {
-        return true;
+        return \true;
     }
 }

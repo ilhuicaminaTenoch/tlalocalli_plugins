@@ -14,6 +14,7 @@ if (!\defined('ABSPATH')) {
 }
 /**
  * Admin notice class.
+ * @internal
  */
 class AdminNotice extends Notice
 {
@@ -93,7 +94,7 @@ class AdminNotice extends Notice
         \ob_start();
         sb_get_template('Notification/templates/' . $this->type . '.php', ['notice' => $notice, 'type' => $this->type, 'id' => $this->id]);
         $notice_html = \ob_get_clean();
-        $notice_html = apply_filters('sb_' . $this->type . '_notice_markup', $notice_html);
+        $notice_html = \apply_filters('sb_' . $this->type . '_notice_markup', $notice_html);
         echo $notice_html;
     }
 }

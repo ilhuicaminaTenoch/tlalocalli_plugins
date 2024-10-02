@@ -486,7 +486,7 @@ class WC_REST_System_Status_V2_Controller extends WC_REST_Controller {
 					'readonly'    => true,
 					'properties'  => array(
 						'api_enabled'                    => array(
-							'description' => __( 'REST API enabled?', 'woocommerce' ),
+							'description' => __( 'Legacy REST API enabled?', 'woocommerce' ),
 							'type'        => 'boolean',
 							'context'     => array( 'view' ),
 							'readonly'    => true,
@@ -864,7 +864,7 @@ class WC_REST_System_Status_V2_Controller extends WC_REST_Controller {
 		}
 
 		$database_version = wc_get_server_database_version();
-		$log_directory    = LoggingUtil::get_log_directory();
+		$log_directory    = LoggingUtil::get_log_directory( false );
 
 		// Return all environment info. Described by JSON Schema.
 		return array(

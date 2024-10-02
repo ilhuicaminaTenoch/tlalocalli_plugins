@@ -541,13 +541,38 @@
 .sb-tab-content .sb-tab-box-small {
     padding: 13px 24px;
 }
+.sb-tab-content .sb-tab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(232, 232, 235);
+    padding: 8px 30px 10px 24px;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+}
 .sb-tab-content .sb-tab-box h3,
-#sbi-settings .sb-tab-content .sb-tab-box h3 {
+#sbi-settings .sb-tab-content .sb-tab-box h3,
+#sbi-settings .sb-tab-content .sb-tab-header h3 {
     margin: 0px 0px 5px;
     font-size: 18px;
     line-height: 140%;
     color: #141B38;
     display: flex;
+}
+.sbi-btn.optimize-image-btn {
+    box-shadow: rgba(60, 66, 87, 0.05) 0px 2px 5px, rgba(0, 0, 0, 0.05) 0px 1px 1px, rgba(0, 0, 0, 0.12) 0px -1px 1px inset;
+    padding: 8px 12px;
+}
+
+.sb-form-field.image-format-field {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sb-form-field.image-format-field .sbi-label {
+    font-weight: 600;
 }
 .sb-tab-content .sb-tab-box h3 .sb-tooltip-info {
     transform: translate(10px, 2px);
@@ -960,14 +985,24 @@
 }
 
 .sb-tab-box.sb-caching-box .sbi-caching-btn .loading path,
-.sb-tab-box.sb-optimize-box .optimize-image-btn .loading path,
-.sb-tab-box.sb-dpa-clear-box-style .loading path{
+.sb-tab-header .optimize-image-btn .loading path,
+.sb-tab-box.sb-reset-box-style .loading path,
+.sb-tab-box.sb-dpa-clear-box-style .loading path {
     fill: rgba(23, 22, 22, .95)
 }
+
 .sb-tab-box.sb-caching-box .sbi-caching-btn .success svg,
-.sb-tab-box.sb-optimize-box .optimize-image-btn .success svg,
-.sb-tab-box.sb-dpa-clear-box-style .success svg{
+.sb-tab-header .optimize-image-btn .success svg,
+.sb-tab-box.sb-reset-box-style .success svg,
+.sb-tab-box.sb-dpa-clear-box-style .success svg {
     stroke: rgba(23, 22, 22, .95)
+}
+
+.sb-tab-box.sb-caching-box .sbi-caching-btn .error svg path,
+.sb-tab-header .optimize-image-btn .error svg path,
+.sb-tab-box.sb-reset-box-style .error svg path,
+.sb-tab-box.sb-dpa-clear-box-style .error svg path {
+    fill: #D72C2C;
 }
 
 /* Translation Tab */

@@ -1664,6 +1664,7 @@ function sbi_defaults() {
 		'sb_instagram_preserve_settings'    => '',
 		'sb_instagram_ajax_theme'           => false,
 		'sb_instagram_disable_resize'       => false,
+		'image_format'                      => 'webp',
 		'sb_instagram_cache_time'           => 1,
 		'sb_instagram_cache_time_unit'      => 'hours',
 		'sbi_caching_type'                  => 'background',

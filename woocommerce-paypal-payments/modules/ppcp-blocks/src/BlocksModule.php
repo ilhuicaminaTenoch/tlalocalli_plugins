@@ -12,29 +12,36 @@ namespace WooCommerce\PayPalCommerce\Blocks;
 use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use WooCommerce\PayPalCommerce\Blocks\Endpoint\UpdateShippingEndpoint;
 use WooCommerce\PayPalCommerce\Button\Assets\SmartButtonInterface;
-use WooCommerce\PayPalCommerce\Vendor\Dhii\Container\ServiceProvider;
-use WooCommerce\PayPalCommerce\Vendor\Dhii\Modular\Module\ModuleInterface;
-use WooCommerce\PayPalCommerce\Vendor\Interop\Container\ServiceProviderInterface;
+use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ExecutableModule;
+use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ExtendingModule;
+use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ModuleClassNameIdTrait;
+use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ServiceModule;
 use WooCommerce\PayPalCommerce\Vendor\Psr\Container\ContainerInterface;
 
 /**
  * Class BlocksModule
  */
-class BlocksModule implements ModuleInterface {
+class BlocksModule implements ServiceModule, ExtendingModule, ExecutableModule {
+	use ModuleClassNameIdTrait;
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setup(): ServiceProviderInterface {
-		return new ServiceProvider(
-			require __DIR__ . '/../services.php',
-			require __DIR__ . '/../extensions.php'
-		);
+	public function services(): array {
+		return require __DIR__ . '/../services.php';
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function run( ContainerInterface $c ): void {
+	public function extensions(): array {
+		return require __DIR__ . '/../extensions.php';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function run( ContainerInterface $c ): bool {
 		if (
 			! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' )
 			|| ! function_exists( 'woocommerce_store_api_register_payment_requirements' )
@@ -54,14 +61,18 @@ class BlocksModule implements ModuleInterface {
 				}
 			);
 
-			return;
+			return true;
 		}
 
 		add_action(
 			'woocommerce_blocks_payment_method_type_registration',
 			function( PaymentMethodRegistry $payment_method_registry ) use ( $c ): void {
 				$payment_method_registry->register( $c->get( 'blocks.method' ) );
-				$payment_method_registry->register( $c->get( 'blocks.advanced-card-method' ) );
+
+				// Include ACDC in the Block Checkout only in case Axo doesn't exist or is not available or the user is logged in.
+				if ( ! $c->has( 'axoblock.available' ) || ! $c->get( 'axoblock.available' ) || is_user_logged_in() ) {
+					$payment_method_registry->register( $c->get( 'blocks.advanced-card-method' ) );
+				}
 			}
 		);
 
@@ -118,13 +129,6 @@ class BlocksModule implements ModuleInterface {
 				return $components;
 			}
 		);
-	}
-
-	/**
-	 * Returns the key for the module.
-	 *
-	 * @return string|void
-	 */
-	public function getKey() {
+		return true;
 	}
 }

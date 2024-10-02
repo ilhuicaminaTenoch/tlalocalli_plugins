@@ -2,6 +2,7 @@
 
 namespace MercadoPago\Woocommerce\Configs;
 
+use Exception;
 use MercadoPago\Woocommerce\Helpers\Cache;
 use MercadoPago\Woocommerce\Helpers\Requester;
 use MercadoPago\Woocommerce\Hooks\Options;
@@ -14,105 +15,45 @@ if (!defined('ABSPATH')) {
 
 class Seller
 {
-    /**
-     * @const
-     */
     private const SITE_ID = '_site_id_v1';
 
-    /**
-     * @const
-     */
     private const CLIENT_ID = '_mp_client_id';
 
-    /**
-     * @const
-     */
     private const COLLECTOR_ID = '_collector_id_v1';
 
-    /**
-     * @const
-     */
     private const CREDENTIALS_PUBLIC_KEY_PROD = '_mp_public_key_prod';
 
-    /**
-     * @const
-     */
     private const CREDENTIALS_PUBLIC_KEY_TEST = '_mp_public_key_test';
 
-    /**
-     * @const
-     */
     private const CREDENTIALS_ACCESS_TOKEN_PROD = '_mp_access_token_prod';
 
-    /**
-     * @const
-     */
     private const CREDENTIALS_ACCESS_TOKEN_TEST = '_mp_access_token_test';
 
-    /**
-     * @const
-     */
     private const HOMOLOG_VALIDATE = 'homolog_validate';
 
-    /**
-     * @const
-     */
     private const CHECKOUT_BASIC_PAYMENT_METHODS = '_checkout_payments_methods';
 
-    /**
-     * @const
-     */
     private const CHECKOUT_TICKET_PAYMENT_METHODS = '_all_payment_methods_ticket';
 
-    /**
-     * @const
-     */
     private const CHECKOUT_PSE_PAYMENT_METHODS = '_payment_methods_pse';
 
-    /**
-     * @const
-     */
     private const SITE_ID_PAYMENT_METHODS = '_site_id_payment_methods';
 
-    /**
-     * @const
-     */
     private const CHECKOUT_PAYMENT_METHOD_PIX = '_mp_payment_methods_pix';
 
-
-    /**
-     * @const
-     */
     private const TEST_USER = '_test_user_v1';
 
-    /**
-     * @const
-     */
     private const AUTO_UPDATE_PLUGINS = 'auto_update_plugins';
-    /**
-     * @var Cache
-     */
-    private $cache;
 
-    /**
-     * @var Options
-     */
-    private $options;
+    private Cache $cache;
 
-    /**
-     * @var Requester
-     */
-    private $requester;
+    private Options $options;
 
-    /**
-     * @var Store
-     */
-    private $store;
+    private Requester $requester;
 
-    /**
-     * @var Logs
-     */
-    private $logs;
+    private Store $store;
+
+    private Logs $logs;
 
     /**
      * Credentials constructor
@@ -311,7 +252,7 @@ class Seller
     /**
      * @return string
      */
-    public function getCustIdFromAT()
+    public function getCustIdFromAT(): string
     {
         preg_match('/(\d+)$/', $this->getCredentialsAccessToken(), $matches);
         return $matches[0];
@@ -466,7 +407,7 @@ class Seller
      * @param string|null $accessToken
      *
      */
-    public function updatePaymentMethods(string $publicKey = null, string $accessToken = null): void
+    public function updatePaymentMethods(?string $publicKey = null, ?string $accessToken = null): void
     {
         if ($publicKey === null) {
             $publicKey = $this->getCredentialsPublicKey();
@@ -499,7 +440,7 @@ class Seller
      * @param string|null $siteId
      *
      */
-    public function updatePaymentMethodsBySiteId(string $siteId = null): void
+    public function updatePaymentMethodsBySiteId(?string $siteId = null): void
     {
         if ($siteId === null) {
             $siteId = $this->getSiteId();
@@ -707,7 +648,7 @@ class Seller
             $this->cache->setCache($key, $serializedResponse);
 
             return $serializedResponse;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logs->file->error(
                 "Mercado pago gave error to get seller info: {$e->getMessage()}",
                 __CLASS__
@@ -748,7 +689,7 @@ class Seller
      *
      * @return array
      */
-    private function validateCredentials(string $accessToken = null, string $publicKey = null): array
+    private function validateCredentials(?string $accessToken = null, ?string $publicKey = null): array
     {
         try {
             $key   = sprintf('%sat%spk%s', __FUNCTION__, $accessToken, $publicKey);
@@ -776,7 +717,7 @@ class Seller
             $this->cache->setCache($key, $serializedResponse);
 
             return $serializedResponse;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logs->file->error(
                 "Mercado pago gave error to validate seller credentials: {$e->getMessage()}",
                 __CLASS__
@@ -796,7 +737,7 @@ class Seller
      *
      * @return array
      */
-    private function getPaymentMethods(string $publicKey = null, string $accessToken = null): array
+    private function getPaymentMethods(?string $publicKey = null, ?string $accessToken = null): array
     {
         try {
             $key       = sprintf('%sat%spk%s', __FUNCTION__, $accessToken, $publicKey);
@@ -832,7 +773,7 @@ class Seller
             $this->cache->setCache($key, $serializedResponse);
 
             return $serializedResponse;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logs->file->error(
                 "Mercado pago gave error to get seller payment methods: {$e->getMessage()}",
                 __CLASS__
@@ -878,7 +819,7 @@ class Seller
             $this->cache->setCache($key, $serializedResponse);
 
             return $serializedResponse;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logs->file->error(
                 "Mercado pago gave error to get seller payment methods by ID: {$e->getMessage()}",
                 __CLASS__
@@ -894,7 +835,7 @@ class Seller
      *
      * @return bool
      */
-    public function isAutoUpdate()
+    public function isAutoUpdate(): bool
     {
         $auto_update_plugins = $this->options->get(self::AUTO_UPDATE_PLUGINS, '');
 

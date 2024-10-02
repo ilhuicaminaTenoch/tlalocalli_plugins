@@ -143,7 +143,7 @@ class FeedSettings
 		$feed_settings = $this->get_feed_settings();
 
 		if (isset($feed_settings['sources']) && !empty($feed_settings['sources'])) {
-			$sources = Utils::get_sources_list(['open_id' => $feed_settings['sources'][0]]);
+			$sources = Utils::get_sources_list(['open_id' => $feed_settings['sources']]);
 		}
 
 		return $sources;

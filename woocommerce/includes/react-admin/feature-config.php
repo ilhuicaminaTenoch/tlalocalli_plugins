@@ -23,13 +23,13 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'navigation' => true,
 			'onboarding' => true,
 			'onboarding-tasks' => true,
-			'pattern-toolkit-full-composability' => false,
+			'pattern-toolkit-full-composability' => true,
 			'product-pre-publish-modal' => false,
 			'product-custom-fields' => true,
 			'remote-inbox-notifications' => true,
 			'remote-free-extensions' => true,
 			'payment-gateway-suggestions' => true,
-			'printful' => false,
+			'printful' => true,
 			'settings' => false,
 			'shipping-label-banner' => true,
 			'subscriptions' => true,
@@ -41,6 +41,8 @@ if ( ! function_exists( 'wc_admin_get_feature_config' ) ) {
 			'async-product-editor-category-field' => false,
 			'launch-your-store' => true,
 			'product-editor-template-system' => false,
+			'blueprint' => false,
+			'reactify-classic-payments-settings' => false,
 		);
 	}
 }

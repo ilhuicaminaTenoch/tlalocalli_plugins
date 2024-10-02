@@ -43,6 +43,13 @@ class Feed
 	protected $statuses = array();
 
 	/**
+	 * Posts cursor for each source.
+	 *
+	 * @var array
+	 */
+	protected $posts_cursor = array();
+
+	/**
 	 * Feed ID.
 	 *
 	 * @var int
@@ -392,14 +399,19 @@ class Feed
 
 		$feed_settings = $this->get_feed_settings();
 
-		// By default posts are sorted by latest first, return if latest.
-		if (isset($feed_settings['sortFeedsBy']) && $feed_settings['sortFeedsBy'] === 'latest') {
-			return $posts;
-		}
-
 		// if sortRandomEnabled is true, return. Shuffle is done after the posts are sorted.
 		if (isset($feed_settings['sortRandomEnabled']) && $feed_settings['sortRandomEnabled'] === true) {
 			return $posts;
+		}
+
+		// sort by latest date.
+		if (isset($feed_settings['sortFeedsBy']) && $feed_settings['sortFeedsBy'] === 'latest') {
+			usort(
+				$posts,
+				function ($a, $b) {
+					return $b['create_time'] <=> $a['create_time'];
+				}
+			);
 		}
 
 		// sort by oldest date.
@@ -448,24 +460,32 @@ class Feed
 			return array();
 		}
 
-		$remote_header_data = $this->get_remote_header_data($feed_settings);
+		$remote_header_data = array();
 
-		if (! empty($remote_header_data)) {
-			$open_id = isset($remote_header_data['open_id']) ? sanitize_text_field($remote_header_data['open_id']) : '';
-			$source_table = new SourcesTable();
-			$source = !empty($open_id) ? $source_table->get_source($open_id) : false;
+		foreach ($feed_settings['sources'] as $feed_source) {
+			$header_data = $this->get_remote_header_data($feed_source);
 
-			if ($source) {
-				$remote_header_data = $this->resize_avatar($remote_header_data);
+			if (!empty($header_data)) {
+				$open_id = isset($header_data['open_id']) ? sanitize_text_field($header_data['open_id']) : '';
+				$source_table = new SourcesTable();
+				$source = !empty($open_id) ? $source_table->get_source($open_id) : false;
 
-				$source['display_name'] = ! empty($remote_header_data['display_name']) ? sanitize_text_field(wp_unslash($remote_header_data['display_name'])) : '';
-				$source['info']         = sbtt_sanitize_data($remote_header_data);
+				if ($source) {
+					$header_data = $this->resize_avatar($header_data);
 
-				// Update or insert the source.
-				$source_table->update_or_insert($source);
+					$source['display_name'] = !empty($header_data['display_name']) ? sanitize_text_field(wp_unslash($header_data['display_name'])) : '';
+					$source['info']         = sbtt_sanitize_data($header_data);
+
+					// Update or insert the source.
+					$source_table->update_or_insert($source);
+
+					$remote_header_data[] = $header_data;
+				}
 			}
+		}
 
-			// Update the cache.
+		// Update the cache.
+		if (!empty($remote_header_data)) {
 			$this->feed_cache->update_or_insert('header', \json_encode($remote_header_data));
 		}
 
@@ -475,19 +495,19 @@ class Feed
 	/**
 	 * Get remote header data.
 	 *
-	 * @param array $settings Feed settings.
+	 * @param array $source Feed source.
 	 * @return array
 	 */
-	public function get_remote_header_data($settings)
+	public function get_remote_header_data($source)
 	{
-		if (! isset($settings['sources']) || empty($settings['sources'])) {
+		if (! isset($source) || empty($source)) {
 			return array();
 		}
 
 		$args = [
-			'access_token' => $settings['sources'][0]['access_token'],
-			'open_id'      => $settings['sources'][0]['open_id'],
-			'username'     => $settings['sources'][0]['info']['username'],
+			'access_token' => $source['access_token'],
+			'open_id'      => $source['open_id'],
+			'username'     => $source['info']['username'],
 		];
 
 		$relay    = new Relay();
@@ -521,19 +541,41 @@ class Feed
 			return array();
 		}
 
-		$remote_posts = $this->get_remote_posts($feed_settings);
+		$remote_posts = array();
+
+		foreach ($feed_settings['sources'] as $source) {
+			$remote_posts = array_merge($remote_posts, $this->get_remote_posts($source));
+		}
 
 		if (empty($remote_posts)) {
 			return array();
 		}
 
-		while ($this->get_next_page_cursor() && count($remote_posts) < self::MAX_POSTS) {
-			$next_page  = $this->get_next_page_cursor();
-			$next_posts = $this->get_remote_posts($feed_settings, $next_page);
+		while (!empty($this->posts_cursor) && count($remote_posts) < self::MAX_POSTS) {
+			$next_posts = array();
 
-			if (! empty($next_posts)) {
+			foreach ($this->posts_cursor as $cursor) {
+				$source = array_values(array_filter(
+					$feed_settings['sources'],
+					function ($source) use ($cursor) {
+						return $source['open_id'] === $cursor['open_id'];
+					}
+				))[0] ?? null;
+
+				if ($source) {
+					$next_posts = array_merge($next_posts, $this->get_remote_posts($source, $cursor['cursor']));
+				}
+			}
+
+			if (!empty($next_posts)) {
 				$remote_posts = array_merge($remote_posts, $next_posts);
 			}
+		}
+
+		if (!empty($this->posts_cursor)) {
+			$this->feed_cache->update_or_insert('posts_cursor', \json_encode($this->posts_cursor));
+		} else {
+			$this->feed_cache->update_or_insert('posts_cursor', '');
 		}
 
 		// Update or insert the posts into the database.
@@ -545,23 +587,23 @@ class Feed
 	/**
 	 * Get remote posts.
 	 *
-	 * @param array  $settings Feed settings.
+	 * @param array  $source Feed source.
 	 * @param string $cursor  Cursor.
 	 * @return array
 	 */
-	public function get_remote_posts($settings, $cursor = '')
+	public function get_remote_posts($source, $cursor = '')
 	{
-		if (! isset($settings['sources']) || empty($settings['sources'])) {
+		if (!isset($source) || empty($source)) {
 			return array();
 		}
 
 		$args = [
-			'access_token' => $settings['sources'][0]['access_token'],
-			'open_id'      => $settings['sources'][0]['open_id'],
-			'username'     => $settings['sources'][0]['info']['username'],
+			'access_token' => $source['access_token'],
+			'open_id'      => $source['open_id'],
+			'username'     => $source['info']['username'],
 		];
 
-		if (! empty($cursor)) {
+		if (!empty($cursor)) {
 			$args['cursor'] = $cursor;
 		}
 
@@ -577,8 +619,8 @@ class Feed
 		if (isset($response['data']['video_data'])) {
 			$posts = $response['data']['video_data'];
 			$posts = array_map(
-				function ($post) use ($settings) {
-					$post['open_id'] = $settings['sources'][0]['open_id'];
+				function ($post) use ($source) {
+					$post['open_id'] = $source['open_id'];
 					return $post;
 				},
 				$posts
@@ -587,10 +629,11 @@ class Feed
 			$posts = array();
 		}
 
-		if (isset($response['data']['cursor']) && ! empty($response['data']['cursor'])) {
-			$this->feed_cache->update_or_insert('posts_cursor', \json_encode($response['data']['cursor']));
+		if (isset($response['data']['cursor']) && !empty($response['data']['cursor'])) {
+			$cursor = ['open_id' => $source['open_id'], 'cursor' => $response['data']['cursor']];
+			$this->posts_cursor[$source['open_id']] = $cursor;
 		} else {
-			$this->feed_cache->update_or_insert('posts_cursor', '');
+			unset($this->posts_cursor[$source['open_id']]);
 		}
 
 		return $posts;
@@ -629,7 +672,7 @@ class Feed
 		$feed_settings = $this->get_feed_settings();
 		$max           = max(absint($feed_settings['numPostDesktop']), absint($feed_settings['numPostTablet']), absint($feed_settings['numPostMobile']));
 
-		if (count($posts) >= (int) $page * (int) $max) {
+		if (count($posts) > (int) $page * (int) $max) {
 			return true;
 		}
 
@@ -639,7 +682,7 @@ class Feed
 	/**
 	 * Get next page cursor
 	 *
-	 * @return string
+	 * @return mixed string || bool || array
 	 */
 	public function get_next_page_cursor()
 	{

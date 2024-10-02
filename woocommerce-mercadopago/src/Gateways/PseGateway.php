@@ -2,6 +2,7 @@
 
 namespace MercadoPago\Woocommerce\Gateways;
 
+use Exception;
 use MercadoPago\Woocommerce\Helpers\Form;
 use MercadoPago\Woocommerce\Transactions\PseTransaction;
 use MercadoPago\Woocommerce\Exceptions\ResponseStatusException;
@@ -37,6 +38,7 @@ class PseGateway extends AbstractGateway
 
     /**
      * PseGateway constructor
+     * @throws Exception
      */
     public function __construct()
     {
@@ -243,7 +245,7 @@ class PseGateway extends AbstractGateway
     {
         $currentUser     = $this->mercadopago->helpers->currentUser->getCurrentUser();
         $loggedUserEmail = ($currentUser->ID != 0) ? $currentUser->user_email : null;
-
+        $amountAndCurrencyRatio = $this->getAmountAndCurrency();
         return ['test_mode'                        => $this->mercadopago->storeConfig->isTestMode(),
             'test_mode_title'                  => $this->storeTranslations['test_mode_title'],
             'test_mode_description'            => $this->storeTranslations['test_mode_description'],
@@ -253,13 +255,11 @@ class PseGateway extends AbstractGateway
             'input_document_helper'            => $this->storeTranslations['input_document_helper'],
             'pse_text_label'                   => $this->storeTranslations['pse_text_label'],
             'input_table_button'               => $this->storeTranslations['input_table_button'],
-            'amount'                           => $this->getAmount(),
             'site_id'                          => $this->mercadopago->sellerConfig->getSiteId(),
             'payer_email'                      => esc_js($loggedUserEmail),
             'terms_and_conditions_description' => $this->storeTranslations['terms_and_conditions_description'],
             'terms_and_conditions_link_text'   => $this->storeTranslations['terms_and_conditions_link_text'],
             'terms_and_conditions_link_src'    => $this->links['mercadopago_terms_and_conditions'],
-            'currency_ratio'                   => $this->mercadopago->helpers->currency->getRatio($this),
             'woocommerce_currency'             => get_woocommerce_currency(),
             'account_currency'                 => $this->mercadopago->helpers->country->getCountryConfigs(),
             'financial_institutions'           => json_encode($this->getFinancialInstitutions()),
@@ -267,6 +267,9 @@ class PseGateway extends AbstractGateway
             'financial_institutions_label'     => $this->storeTranslations['financial_institutions_label'],
             'financial_institutions_helper'    => $this->storeTranslations['financial_institutions_helper'],
             'financial_placeholder'            => $this->storeTranslations['financial_placeholder'],
+            'amount'                           => $amountAndCurrencyRatio['amount'],
+            'currency_ratio'                   => $amountAndCurrencyRatio['currencyRatio'],
+            'message_error_amount'             => $this->storeTranslations['message_error_amount'],
         ];
     }
 
@@ -282,8 +285,6 @@ class PseGateway extends AbstractGateway
         $order    = wc_get_order($order_id);
         try {
             parent::process_payment($order_id);
-
-            $checkout = Form::sanitizedPostData('mercadopago_pse');
 
             if (isset($_POST['mercadopago_pse'])) {
                 $checkout = Form::sanitizedPostData('mercadopago_pse');
@@ -321,11 +322,11 @@ class PseGateway extends AbstractGateway
                     new ResponseStatusException('exception : Invalid status or status_detail on ' . __METHOD__),
                     $this->mercadopago->storeTranslations->commonMessages['cho_form_error'],
                     self::LOG_SOURCE,
-                    (array)$response
+                    $response
                 );
             }
             throw new InvalidCheckoutDataException('exception : Unable to process payment on ' . __METHOD__);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->processReturnFail(
                 $e,
                 $e->getMessage(),
@@ -370,21 +371,22 @@ class PseGateway extends AbstractGateway
     {
         // Rules for pse MCO
         if (
-            ($checkout['site_id'] === 'MCO' && (
-                (empty($checkout['doc_number']) || !isset($checkout['doc_number']))
-                || (empty($checkout['doc_type']) || !isset($checkout['doc_type']))
-                || (empty($checkout['person_type']) || !isset($checkout['person_type']))
-                || (empty($checkout['bank']) || !isset($checkout['bank']))
-                || (strcmp($checkout['person_type'], 'individual') != 0  && strcmp($checkout['person_type'], 'association') != 0 )
-            ))
+            $checkout['site_id'] === 'MCO' && (
+                empty($checkout['doc_number']) ||
+                empty($checkout['doc_type']) ||
+                empty($checkout['person_type']) ||
+                empty($checkout['bank']) ||
+                !in_array($checkout['person_type'], ['individual', 'association'])
+            )
         ) {
             return $this->processReturnFail(
-                new \Exception('Unable to process payment on ' . __METHOD__),
+                new Exception('Unable to process payment on ' . __METHOD__),
                 $this->mercadopago->storeTranslations->commonMessages['cho_form_error'],
                 self::LOG_SOURCE,
                 (array)$checkout,
                 true
             );
         }
+        return true;
     }
 }

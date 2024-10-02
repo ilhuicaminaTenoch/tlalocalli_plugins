@@ -1,4 +1,38 @@
 <div v-if="selected === 'app-3'">
+    <div class="sb-tab-header">
+        <h3>{{advancedTab.optimizeBox.header}}</h3>
+        <button type="button" class="sbi-btn ml-10 optimize-image-btn" @click="clearImageResizeCache()">
+            <span v-html="clearImageResizeCacheIcon()" :class="optimizeCacheStatus"></span>
+            {{advancedTab.optimizeBox.reset}}
+        </button>
+    </div>
+    <div class="sb-tab-box sb-optimize-box clearfix">
+        <div class="tab-label">
+            <h3>{{advancedTab.optimizeBox.title}}</h3>
+        </div>
+
+        <div class="sbi-tab-form-field">
+            <div class="sb-form-field">
+                <label for="enable-resize" class="sbi-checkbox">
+                    <input type="checkbox" name="enable-resize" id="enable-resize" v-model="model.advanced.sbi_enable_resize">
+                    <span class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </span>
+                </label>
+
+                <span class="help-text" v-html="advancedTab.optimizeBox.helpText"></span>
+            </div>
+
+            <div class="sb-form-field image-format-field" v-if="model.advanced.sbi_enable_resize">
+                <label for="image-format" class="sbi-label">
+                    {{advancedTab.optimizeBox.formatTitle}}
+                </label>
+                <select id="image-format" class="sbi-select size-md mr-3" v-model="model.advanced.image_format">
+                    <option v-for="(key, val) in advancedTab.optimizeBox.formats" :value="val">{{key}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="sb-tab-box sb-legacy-css-box sb-reset-box-style clearfix" v-if="sbi_settings.legacyCSSSettings">
         <div class="tab-label">
             <h3>{{advancedTab.legacyCSSBox.title}}</h3>
@@ -35,44 +69,20 @@
             </div>
         </div>
     </div>
-    <div class="sb-tab-box sb-optimize-box sb-reset-box-style clearfix">
+    <div class="sb-tab-box sb-clear-error-log-box sb-reset-box-style clearfix">
         <div class="tab-label">
-            <h3>{{advancedTab.optimizeBox.title}}</h3>
+            <h3>{{advancedTab.resetErrorBox.title}}</h3>
         </div>
-
         <div class="sbi-tab-form-field">
-            <div class="sb-form-field">
-                <label for="enable-resize" class="sbi-checkbox">
-                    <input type="checkbox" name="enable-resize" id="enable-resize" v-model="model.advanced.sbi_enable_resize">
-                    <span class="toggle-track">
-                        <div class="toggle-indicator"></div>
-                    </span>
-                    <button type="button" class="sbi-btn ml-10 optimize-image-btn" @click="clearImageResizeCache()">
-                        <span v-html="clearImageResizeCacheIcon()" :class="optimizeCacheStatus" v-if="optimizeCacheStatus !== null"></span>
-                        {{advancedTab.optimizeBox.reset}}
-                    </button>
-                </label>
-
-                <span class="help-text">
-                    {{advancedTab.optimizeBox.helpText}}
-                </span>
-            </div>
-        </div>
-    </div>
-	<div class="sb-tab-box sb-clear-error-log-box sb-reset-box-style clearfix">
-		<div class="tab-label">
-			<h3>{{advancedTab.resetErrorBox.title}}</h3>
-		</div>
-		<div class="sbi-tab-form-field">
-			<button type="button" class="sbi-btn" @click="resetErrorLog()">
-				<span v-html="resetErrorLogIcon()" :class="clearErrorLogStatus" v-if="clearErrorLogStatus !== null"></span>
-				{{advancedTab.resetErrorBox.reset}}
-			</button>
-			<span class="help-text">
+            <button type="button" class="sbi-btn" @click="resetErrorLog()">
+                <span v-html="resetErrorLogIcon()" :class="clearErrorLogStatus" v-if="clearErrorLogStatus !== null"></span>
+                {{advancedTab.resetErrorBox.reset}}
+            </button>
+            <span class="help-text">
                 {{advancedTab.resetErrorBox.helpText}}
             </span>
-		</div>
-	</div>
+        </div>
+    </div>
     <div class="sb-tab-box sb-usage-box clearfix">
         <div class="tab-label">
             <h3>{{advancedTab.usageBox.title}}</h3>

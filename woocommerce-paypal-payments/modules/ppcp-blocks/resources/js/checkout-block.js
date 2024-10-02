@@ -3,6 +3,7 @@ import {
 	registerExpressPaymentMethod,
 	registerPaymentMethod,
 } from '@woocommerce/blocks-registry';
+import { __ } from '@wordpress/i18n';
 import {
 	mergeWcAddress,
 	paypalAddressToWc,
@@ -227,7 +228,7 @@ const PayPalComponent = ( {
 				throw new Error( config.scriptData.labels.error.generic );
 			}
 
-			if ( ! shouldHandleShippingInPayPal() ) {
+			if ( ! shouldskipFinalConfirmation() ) {
 				location.href = getCheckoutRedirectUrl();
 			} else {
 				setGotoContinuationOnError( true );
@@ -318,7 +319,7 @@ const PayPalComponent = ( {
 				throw new Error( config.scriptData.labels.error.generic );
 			}
 
-			if ( ! shouldHandleShippingInPayPal() ) {
+			if ( ! shouldskipFinalConfirmation() ) {
 				location.href = getCheckoutRedirectUrl();
 			} else {
 				setGotoContinuationOnError( true );
@@ -364,15 +365,19 @@ const PayPalComponent = ( {
 	};
 
 	const shouldHandleShippingInPayPal = () => {
-		if ( config.finalReviewEnabled ) {
-			return false;
-		}
-
-		return (
-			window.ppcpFundingSource !== 'venmo' ||
-			! config.scriptData.vaultingEnabled
-		);
+		return shouldskipFinalConfirmation() && config.needShipping
 	};
+
+    const shouldskipFinalConfirmation = () => {
+        if ( config.finalReviewEnabled ) {
+            return false;
+        }
+
+        return (
+            window.ppcpFundingSource !== 'venmo' ||
+            ! config.scriptData.vaultingEnabled
+        );
+    };
 
 	let handleShippingOptionsChange = null;
 	let handleShippingAddressChange = null;
@@ -544,7 +549,7 @@ const PayPalComponent = ( {
 			if ( config.scriptData.continuation ) {
 				return true;
 			}
-			if ( shouldHandleShippingInPayPal() ) {
+			if ( shouldskipFinalConfirmation() ) {
 				location.href = getCheckoutRedirectUrl();
 			}
 			return true;
@@ -770,6 +775,12 @@ if ( block_enabled && config.enabled ) {
 		] ) {
 			registerExpressPaymentMethod( {
 				name: `${ config.id }-${ fundingSource }`,
+				title: 'PayPal',
+				description: __(
+					'Eligible users will see the PayPal button.',
+					'woocommerce-paypal-payments'
+				),
+				gatewayId: 'ppcp-gateway',
 				paymentMethodId: config.id,
 				label: (
 					<div dangerouslySetInnerHTML={ { __html: config.title } } />

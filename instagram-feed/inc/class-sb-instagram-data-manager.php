@@ -128,6 +128,7 @@ class SB_Instagram_Data_Manager {
 
 		delete_option( 'sbi_top_api_calls' );
 		delete_option( 'sbi_local_avatars' );
+		delete_option( 'sbi_local_avatars_info' );
 	}
 
 	/**
@@ -143,7 +144,7 @@ class SB_Instagram_Data_Manager {
 		$feeds_posts_table_name = $wpdb->prefix . SBI_INSTAGRAM_FEEDS_POSTS;
 
 		$non_hashtag_posts = $wpdb->get_results(
-			"SELECT p.id, p.media_id FROM $table_name as p
+			"SELECT p.id, p.media_id, p.mime_type FROM $table_name as p
 					INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 					WHERE f.hashtag = '';",
 			ARRAY_A
@@ -153,15 +154,17 @@ class SB_Instagram_Data_Manager {
 		$file_suffixes = array( 'thumb', 'low', 'full' );
 
 		foreach ( $non_hashtag_posts as $post ) {
+			$extension = isset( $post['mime_type'] ) &&  $post['mime_type'] === 'image/webp' 
+							? '.webp' : '.jpg';
 			foreach ( $file_suffixes as $file_suffix ) {
-				$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $post['media_id'] . $file_suffix . '.jpg';
+				$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $post['media_id'] . $file_suffix . $extension;
 				if ( is_file( $file_name ) ) {
 					unlink( $file_name );
 				}
 			}
 		}
 
-		$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . '.jpg';
+		$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . $extension;
 		if ( is_file( $file_name ) ) {
 			unlink( $file_name );
 		}

@@ -14,6 +14,7 @@ use SmashBalloon\TikTokFeeds\Common\Utils;
 use SmashBalloon\TikTokFeeds\Common\Services\SettingsManagerService;
 use SmashBalloon\TikTokFeeds\Common\AuthorizationStatusCheck;
 use SmashBalloon\TikTokFeeds\Common\Services\PluginUpgraderService;
+use SmashBalloon\TikTokFeeds\Common\Integrations\WPCode;
 
 class SettingsBuilder extends Settings_Builder
 {
@@ -79,7 +80,7 @@ class SettingsBuilder extends Settings_Builder
 		];
 		$this->settingspage_tabs_path      = SBTT_SETTINGSPAGE_TABS_PATH;
 		$this->settingspage_tabs_namespace = SBTT_SETTINGSPAGE_TABS_NAMESPACE;
-		$this->tabs_order                  = [ 'sb-general-tab', 'sb-feeds-tab', 'sb-advanced-tab' ];
+		$this->tabs_order                  = [ 'sb-general-tab', 'sb-feeds-tab', 'sb-advanced-tab', 'sb-code-snippets-tab' ];
 
 		$this->add_to_menu     = !Utils::sbtt_is_pro() ? true : Utils::is_license_valid();
 		$this->plugin_status   = new AuthorizationStatusCheck();
@@ -109,6 +110,12 @@ class SettingsBuilder extends Settings_Builder
 			'isDevUrl'       => PluginUpgraderService::is_dev_url(home_url()),
 			'tieredFeatures' => Utils::get_tiered_features_list(),
 			'upsellContent' => Utils::get_upsell_modal_content(),
+			'wpCode' => array(
+				'snippets' => WPCode::load_snippets(),
+				'pluginInstalled' => WPCode::is_plugin_installed(),
+				'pluginActive' => WPCode::is_plugin_active(),
+				'isProInstalled' => WPCode::is_pro_installed(),
+			)
 		];
 
 		$newly_retrieved_source_connection_data = Utils::maybe_source_connection_data();

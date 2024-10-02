@@ -203,6 +203,16 @@ class FeedBuilder extends Feed_Builder
 				'type' => 'showcase_carousel',
 				'title' => __('Showcase Carousel', 'feeds-for-tiktok'),
 				'upsellModal' => 'plusTemplateModal',
+			],
+			[
+				'type' => 'gallery',
+				'title' => __('Gallery', 'feeds-for-tiktok'),
+				'upsellModal' => 'plusTemplateModal',
+			],
+			[
+				'type' => 'widget',
+				'title' => __('Widget', 'feeds-for-tiktok'),
+				'upsellModal' => 'plusTemplateModal',
 			]
 		];
 	}

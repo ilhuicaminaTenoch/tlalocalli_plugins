@@ -2,10 +2,11 @@
 
 namespace MercadoPago\Woocommerce\Hooks;
 
+use MercadoPago\Woocommerce\Helpers\Arrays;
 use MercadoPago\Woocommerce\Helpers\Country;
+use MercadoPago\Woocommerce\Helpers\Environment;
 use MercadoPago\Woocommerce\Helpers\Url;
 use MercadoPago\Woocommerce\Configs\Seller;
-use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -13,35 +14,17 @@ if (!defined('ABSPATH')) {
 
 class Scripts
 {
-    /**
-     * @const
-     */
     private const SUFFIX = '_params';
 
-    /**
-     * @const
-     */
     private const MELIDATA_SCRIPT_NAME = 'mercadopago_melidata';
 
-    /**
-     * @const
-     */
     private const CARONTE_SCRIPT_NAME = 'wc_mercadopago';
 
-    /**
-     * @const
-     */
     private const NOTICES_SCRIPT_NAME = 'wc_mercadopago_notices';
 
-    /**
-     * @var Url
-     */
-    private $url;
+    private Url $url;
 
-    /**
-     * @var Seller
-     */
-    private $seller;
+    private Seller $seller;
 
     /**
      * Scripts constructor
@@ -303,7 +286,7 @@ class Scripts
      */
     private function registerStyle(string $name, string $file): void
     {
-        wp_register_style($name, $file, false, MP_VERSION);
+        wp_register_style($name, $file, false, $this->assetVersion());
         wp_enqueue_style($name);
     }
 
@@ -318,10 +301,18 @@ class Scripts
      */
     private function registerScript(string $name, string $file, array $variables = []): void
     {
-        wp_enqueue_script($name, $file, [], MP_VERSION, true);
+        wp_enqueue_script($name, $file, [], $this->assetVersion(), true);
 
         if ($variables) {
             wp_localize_script($name, $name . self::SUFFIX, $variables);
         }
+    }
+
+    /**
+     * Determines the version value to be used on scripts / styles
+     **/
+    private function assetVersion(): string
+    {
+        return Arrays::filterJoin([MP_VERSION, Environment::isDevelopmentEnvironment() ? time() : false], '.');
     }
 }

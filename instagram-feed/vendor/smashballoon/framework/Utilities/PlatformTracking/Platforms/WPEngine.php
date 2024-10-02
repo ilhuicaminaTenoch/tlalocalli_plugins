@@ -2,6 +2,7 @@
 
 namespace InstagramFeed\Vendor\Smashballoon\Framework\Utilities\PlatformTracking\Platforms;
 
+/** @internal */
 class WPEngine implements PlatformInterface
 {
     /**
@@ -9,7 +10,7 @@ class WPEngine implements PlatformInterface
      */
     public function register()
     {
-        add_filter('sb_hosting_platform', [$this, 'filter_sb_hosting_platform']);
+        \add_filter('sb_hosting_platform', [$this, 'filter_sb_hosting_platform']);
     }
     /**
      * @inheritDoc

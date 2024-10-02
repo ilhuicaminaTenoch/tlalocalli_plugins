@@ -227,6 +227,8 @@ class Utils
 				return self::get_list_template_settings($settings);
 			case 'grid':
 				return self::get_default_template_settings($settings);
+			case 'gallery':
+				return self::get_gallery_template_settings($settings);
 			default:
 				return self::get_default_template_settings($settings);
 		}
@@ -245,6 +247,9 @@ class Utils
 		$settings['numPostDesktop'] = 9;
 		$settings['numPostTablet']  = 8;
 		$settings['numPostMobile'] = 6;
+
+		// Header.
+		$settings['showHeader'] = true;
 
 		// Post Style.
 		$settings['postStyle'] = 'regular';
@@ -280,6 +285,9 @@ class Utils
 		$settings['carouselTabletColumns']  = 2;
 		$settings['carouselMobileColumns']  = 1;
 
+		// Header.
+		$settings['showHeader'] = true;
+
 		// Post Style.
 		$settings['postStyle'] = 'regular';
 		$settings['captionPadding'] = [
@@ -313,6 +321,9 @@ class Utils
 		$settings['numPostTablet']  = 1;
 		$settings['numPostMobile'] = 1;
 
+		// Header.
+		$settings['showHeader'] = true;
+
 		// Post Style.
 		$settings['postStyle'] = 'regular';
 		$settings['captionPadding'] = [
@@ -324,7 +335,7 @@ class Utils
 		$settings['postElements'] = [ 'author_info', 'thumbnail', 'playIcon', 'views', 'likes', 'caption' ];
 
 		// Video Player Experience.
-		$settings['videoPlayer'] = 'lightbox';
+		$settings['videoPlayer'] = 'inline';
 
 		// Load More Button.
 		$settings['showLoadButton'] = false;
@@ -346,6 +357,9 @@ class Utils
 		$settings['numPostTablet']  = 8;
 		$settings['numPostMobile'] = 6;
 
+		// Header.
+		$settings['showHeader'] = true;
+
 		// Post Style.
 		$settings['postStyle'] = 'regular';
 		$settings['captionPadding'] = [
@@ -357,7 +371,7 @@ class Utils
 		$settings['postElements'] = [ 'author_info', 'thumbnail', 'playIcon', 'views', 'likes', 'caption' ];
 
 		// Video Player Experience.
-		$settings['videoPlayer'] = 'lightbox';
+		$settings['videoPlayer'] = 'inline';
 
 		// Load More Button.
 		$settings['showLoadButton'] = true;
@@ -378,6 +392,9 @@ class Utils
 		$settings['numPostDesktop'] = 10;
 		$settings['numPostTablet']  = 8;
 		$settings['numPostMobile'] = 6;
+
+		// Header.
+		$settings['showHeader'] = true;
 
 		// Post Style.
 		$settings['postStyle'] = 'boxed';
@@ -429,6 +446,9 @@ class Utils
 		$settings['gridTabletColumns']  = 1;
 		$settings['gridMobileColumns']  = 1;
 
+		// Header.
+		$settings['showHeader'] = false;
+
 		// Post Style.
 		$settings['postStyle'] = 'regular';
 		$settings['captionPadding'] = [
@@ -440,7 +460,7 @@ class Utils
 		$settings['postElements'] = [ 'thumbnail', 'playIcon', 'views', 'likes', 'caption' ];
 
 		// Video Player Experience.
-		$settings['videoPlayer'] = 'lightbox';
+		$settings['videoPlayer'] = 'inline';
 
 		// Load More Button.
 		$settings['showLoadButton'] = true;
@@ -470,6 +490,9 @@ class Utils
 		$settings['carouselShowPagination']      = true;
 		$settings['carouselEnableAutoplay']      = true;
 
+		// Header.
+		$settings['showHeader'] = true;
+
 		// Post Style.
 		$settings['postStyle'] = 'regular';
 		$settings['captionPadding'] = [
@@ -483,6 +506,43 @@ class Utils
 
 		// Load More Button.
 		$settings['showLoadButton'] = false;
+
+		return $settings;
+	}
+
+	/**
+	 * Get the feed settings for the gallery template.
+	 *
+	 * @param array $settings 		Feed settings.
+	 * @return array
+	 */
+	public static function get_gallery_template_settings($settings)
+	{
+		// Layout.
+		$settings['layout']      = 'gallery';
+		$settings['numPostDesktop'] = 9;
+		$settings['numPostTablet']  = 8;
+		$settings['numPostMobile'] = 6;
+		$settings['galleryDesktopColumns'] = 3;
+		$settings['galleryTabletColumns']  = 2;
+		$settings['galleryMobileColumns']  = 1;
+
+		// Header.
+		$settings['showHeader'] = true;
+
+		// Post Style.
+		$settings['postStyle'] = 'regular';
+		$settings['captionPadding'] = [
+			'top' => 12,
+			'bottom' => 12
+		];
+		$settings['postElements'] = [ 'thumbnail', 'playIcon', 'views', 'likes', 'caption' ];
+
+		// Video Player Experience.
+		$settings['videoPlayer'] = 'inline';
+
+		// Load More Button.
+		$settings['showLoadButton'] = true;
 
 		return $settings;
 	}
@@ -525,11 +585,13 @@ class Utils
 				'basic_templates',
 				'header_stats_info',
 				'post_stats_info',
+				'inline_player'
 			],
 			'plus' => [
 				'plus_templates',
 				'masonry_layout',
 				'carousel_layout',
+				'gallery_layout',
 				'random_sorting',
 				'filter_posts'
 			],
@@ -580,174 +642,113 @@ class Utils
 	 */
 	public static function get_upsell_modal_content()
 	{
-		$upsell_modal_content = [
+		$base_url = 'https://smashballoon.com/';
+		$utm_params = [
+			'lite' => '?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=%s&utm_content=LiteUsers50OFF',
+			'upgrade' => '?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=%s&utm_content=Upgrade',
+			'learnMore' => '?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=%s&utm_content=LearnMore'
+		];
+
+		$modals = [
 			'feedsLimitModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to add multiple feeds', 'feeds-for-tiktok'),
 				'description' => __('Boost leads and conversions by displaying custom feeds all over your website to show fresh, relevant content.', 'feeds-for-tiktok'),
-				'image' => 'upsell-multiple-feeds.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=feeds-limit-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=feeds-limit-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=feeds-limit-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-multiple-feeds.png'
 			],
 			'sourcesLimitModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to add multiple sources', 'feeds-for-tiktok'),
 				'description' => __('Do you have multiple TikTok accounts? Use them all in different feeds or combine them into one.', 'feeds-for-tiktok'),
-				'image' => 'upsell-multiple-sources.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=sources-limit-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=sources-limit-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=sources-limit-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-multiple-sources.png'
 			],
 			'feedsUpdateLimitModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to update your feed more often', 'feeds-for-tiktok'),
 				'description' => __('Keep your feed content ultra-fresh with more frequent feed updates in the Pro version.', 'feeds-for-tiktok'),
-				'image' => 'upsell-more-frequent-updates.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=feeds-update-limit-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=feeds-update-limit-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=feeds-update-limit-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-more-frequent-updates.png'
 			],
 			'loadMoreModal' => [
 				'heading' => __('Upgrade to TikTok Pro to add load more functionality', 'feeds-for-tiktok'),
 				'description' => __('Add a Load More button to your feed to allow users to load more posts.', 'feeds-for-tiktok'),
-				'image' => 'upsell-loadmore.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=load-more-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=load-more-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=load-more-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-loadmore.png'
 			],
 			'listModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get advanced layouts', 'feeds-for-tiktok'),
 				'description' => __('Display your videos in a list or carousel to provide your content wherever it fits best on your site.', 'feeds-for-tiktok'),
-				'image' => 'upsell-advanced-layouts.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=list-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=list-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=list-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-advanced-layouts.png'
 			],
 			'masonryModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get advanced layouts', 'feeds-for-tiktok'),
 				'description' => __('Display your videos in a list or carousel to provide your content wherever it fits best on your site.', 'feeds-for-tiktok'),
-				'image' => 'upsell-advanced-layouts.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=masonry-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=masonry-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=masonry-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-advanced-layouts.png'
 			],
 			'carouselModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get advanced layouts', 'feeds-for-tiktok'),
 				'description' => __('Display your videos in a list or carousel to provide your content wherever it fits best on your site.', 'feeds-for-tiktok'),
-				'image' => 'upsell-advanced-layouts.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=carousel-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=carousel-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=carousel-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-advanced-layouts.png'
+			],
+			'galleryModal' => [
+				'heading' => __('Upgrade to TikTok Pro plans to get advanced layouts', 'feeds-for-tiktok'),
+				'description' => __('Display your videos in a list or carousel to provide your content wherever it fits best on your site.', 'feeds-for-tiktok'),
+				'image' => 'upsell-advanced-layouts.png'
 			],
 			'basicTemplateModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get one-click templates!', 'feeds-for-tiktok'),
 				'description' => __('Choose from our expertly designed templates to make feed creation simple no matter the situation.', 'feeds-for-tiktok'),
-				'image' => 'upsell-one-click-templates.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=basic-template-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=basic-template-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=basic-template-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-one-click-templates.png'
 			],
-			'plusTemplateModal'	 => [
+			'plusTemplateModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get one-click templates!', 'feeds-for-tiktok'),
 				'description' => __('Choose from our expertly designed templates to make feed creation simple no matter the situation.', 'feeds-for-tiktok'),
-				'image' => 'upsell-one-click-templates.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=plus-template-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=plus-template-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=plus-template-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-one-click-templates.png'
 			],
 			'proHeaderModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to display stats & description.', 'feeds-for-tiktok'),
 				'description' => __('Provide rich content to boost visitor engagement and encourage them to follow your account.', 'feeds-for-tiktok'),
-				'image' => 'upsell-header-elements.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=pro-header-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=pro-header-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=pro-header-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-header-elements.png'
 			],
 			'proPostModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans for more video elements', 'feeds-for-tiktok'),
 				'description' => __('Show descriptions, view and like counts and author info to provide more rich content to engage your visitors.', 'feeds-for-tiktok'),
-				'image' => 'upsell-post-elements.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=pro-post-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=pro-post-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=pro-post-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-post-elements.png'
 			],
 			'randomSortModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans for custom sorting', 'feeds-for-tiktok'),
 				'description' => __('Sort videos randomly for a unique visitor experience or show off your most viewed or most liked videos first.', 'feeds-for-tiktok'),
-				'image' => 'upsell-sort-random.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=random-sort-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=random-sort-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=random-sort-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-sort-random.png'
 			],
 			'filtersModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get word & hashtag filters', 'feeds-for-tiktok'),
 				'description' => __('Filter by words and hashtags found in the caption. Curate content to target specific kinds of visitors.', 'feeds-for-tiktok'),
-				'image' => 'upsell-word-filters.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=filters-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=filters-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=filters-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-word-filters.png'
 			],
 			'sortModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to sort by likes & views', 'feeds-for-tiktok'),
 				'description' => __('Show off your best content first to boost conversions of site visitors to TikTok followers.', 'feeds-for-tiktok'),
-				'image' => 'upsell-sort-likes-views.png',
-				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=sort-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=sort-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=sort-modal&utm_content=LearnMore'
-				],
-				'includeContent' => true
+				'image' => 'upsell-sort-likes-views.png'
 			],
 			'cardLayoutModal' => [
 				'heading' => __('Upgrade to TikTok Pro plans to get card layouts!', 'feeds-for-tiktok'),
 				'description' => __('Display your videos in an attractive, modern card layout. Help your content standout to engage visitors.', 'feeds-for-tiktok'),
-				'image' => 'upsell-boxed-layouts.png',
+				'image' => 'upsell-boxed-layouts.png'
+			],
+			'playerExperienceModal' => [
+				'heading' => __('Upgrade to TikTok Pro plans to get inline playback', 'feeds-for-tiktok'),
+				'description' => __('Play videos directly on the page without the lightbox. Provide a seamless experience for visitors.', 'feeds-for-tiktok'),
+				'image' => 'upsell-inline-player.png'
+			],
+		];
+
+		$upsell_modal_content = [];
+
+		foreach ($modals as $key => $modal) {
+			$upsell_modal_content[$key] = array_merge($modal, [
 				'buttons' => [
-					'lite' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=all-feeds&utm_medium=card-layout-modal&utm_content=LiteUsers50OFF',
-					'upgrade' => 'https://smashballoon.com/pricing/tiktok-feed/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=card-layout-modal&utm_content=Upgrade',
-					'learnMore' => 'https://smashballoon.com/tiktok-feeds/?utm_campaign=tiktok-free&utm_source=customizer&utm_medium=card-layout-modal&utm_content=LearnMore'
+					'lite' => $base_url . 'pricing/tiktok-feed/' . sprintf($utm_params['lite'], $key),
+					'upgrade' => $base_url . 'pricing/tiktok-feed/' . sprintf($utm_params['upgrade'], $key),
+					'learnMore' => $base_url . 'tiktok-feeds/' . sprintf($utm_params['learnMore'], $key)
 				],
 				'includeContent' => true
-			]
-
-		];
+			]);
+		}
 
 		return $upsell_modal_content;
 	}

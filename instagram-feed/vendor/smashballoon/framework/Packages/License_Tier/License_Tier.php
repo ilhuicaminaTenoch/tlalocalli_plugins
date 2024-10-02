@@ -8,6 +8,7 @@
 namespace InstagramFeed\Vendor\Smashballoon\Framework\Packages\License_Tier;
 
 use function InstagramFeed\Vendor\Smashballoon\Framework\flatten_array;
+/** @internal */
 abstract class License_Tier
 {
     /**
@@ -48,6 +49,7 @@ abstract class License_Tier
      *
      * @var string
      */
+    public $license_tier_free_name;
     public $license_tier_basic_name;
     public $license_tier_plus_name;
     public $license_tier_elite_name;
@@ -123,8 +125,8 @@ abstract class License_Tier
      */
     public function license_data()
     {
-        $license_data = (array) get_option($this->license_data_option_name);
-        $license_tier = $this->license_tier_basic_name;
+        $license_data = (array) \get_option($this->license_data_option_name);
+        $license_tier = $this->license_tier_free_name;
         if (\is_array($license_data) && isset($license_data['item_id']) && isset($license_data['price_id'])) {
             $license_tier = $this->convert_to_readable_plan_name($license_data);
         }
@@ -154,6 +156,9 @@ abstract class License_Tier
         if (\in_array($plan_name, $legacy_plans)) {
             $tier_features = $this->legacy_tier_features();
             return $tier_features;
+        }
+        if ($plan_name == $this->license_tier_free_name) {
+            $tier_features = isset($all_features[$plan_name]) ? $all_features[$plan_name] : [];
         }
         if ($plan_name == $this->license_tier_basic_name) {
             $tier_features = isset($all_features[$plan_name]) ? $all_features[$plan_name] : [];
@@ -222,7 +227,7 @@ abstract class License_Tier
     }
     /**
      * Get tier name
-     * 
+     *
      * @since string $license_tier_name
      */
     public function item_name_to_tier_name()

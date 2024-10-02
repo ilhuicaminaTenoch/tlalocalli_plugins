@@ -121,7 +121,8 @@ class SB_Instagram_Display_Elements {
 						}
 					}
 					if ( isset( $suffix ) ) {
-						$media_url = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . $suffix . '.jpg';
+						$extension = isset( $resized_images[ $post_id ]['extension'] ) ? $resized_images[ $post_id ]['extension'] : '.jpg';
+						$media_url = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . $suffix . $extension;
 						return $media_url;
 					}
 				}
@@ -147,7 +148,8 @@ class SB_Instagram_Display_Elements {
 				 && $resized_images[ $post_id ]['id'] !== 'pending'
 				 && $resized_images[ $post_id ]['id'] !== 'video'
 				 && $resized_images[ $post_id ]['id'] !== 'error' ) {
-				$media_url = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'full.jpg';
+				$extension = isset( $resized_images[ $post_id ]['extension'] ) ? $resized_images[ $post_id ]['extension'] : '.jpg';
+				$media_url = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'full' .$extension;
 			} else {
 				if ( SB_Instagram_GDPR_Integrations::doing_gdpr( $settings ) ) {
 					return trailingslashit( SBI_PLUGIN_URL ) . 'img/thumb-placeholder.png';

@@ -8,30 +8,15 @@ if (!defined('ABSPATH')) {
 
 final class Links
 {
-    /**
-     * @const
-     */
     private const MP_URL = 'https://www.mercadopago.com';
 
-    /**
-     * @const
-     */
     private const MP_URL_PREFIX = 'https://www.mercadopago';
 
-    /**
-     * @const
-     */
     private const MP_DEVELOPERS_URL = 'https://developers.mercadopago.com';
 
-    /**
-     * @var Country
-     */
-    private $country;
+    private Country $country;
 
-    /**
-     * @var Url
-     */
-    private $url;
+    private Url $url;
 
     /**
      * Links constructor
@@ -106,7 +91,7 @@ final class Links
             'mercadopago_developers'           => self::MP_DEVELOPERS_URL,
             'mercadopago_pix'                  => self::MP_URL_PREFIX . '.com.br/ferramentas-para-vender/aceitar-pix',
             'mercadopago_debts'                => self::MP_URL_PREFIX . '.com.ar/cuotas',
-            'mercadopago_support'              => self::MP_URL_PREFIX . $countryConfig['suffix_url'] . '/developers/' . $countryConfig['translate'] . '/support/contact?utm_source=CPWOOCOMMERCE',
+            'mercadopago_support'              => self::MP_URL_PREFIX . $countryConfig['suffix_url'] . '/developers/' . $countryConfig['translate'] . '/support/center/contact?utm_source=cpwoocommerce',
             'mercadopago_terms_and_conditions' => self::MP_URL_PREFIX . $countryConfig['suffix_url'] . $countryConfig['help'] . $countryConfig['terms_and_conditions'],
             'mercadopago_pix_config'           => self::MP_URL_PREFIX . '.com.br/stop/pix?url=https://www.mercadopago.com.br/admin-pix-keys/my-keys?authentication_mode=required',
         ];

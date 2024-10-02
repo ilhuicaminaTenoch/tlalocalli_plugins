@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Instagram Feed
 Plugin URI: https://smashballoon.com/instagram-feed
 Description: Display beautifully clean, customizable, and responsive Instagram feeds.
-Version: 6.4.3
+Version: 6.5.1
 Author: Smash Balloon
 Author URI: https://smashballoon.com/
 License: GPLv2 or later
@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 use InstagramFeed\Helpers\SB_Instagram_Tracking;
 use InstagramFeed\Vendor\Smashballoon\Framework\Packages\Notification\Notices\SBNotices;
+use InstagramFeed\Vendor\Smashballoon\Framework\Packages\Blocks\RecommendedBlocks;
 
 if ( ! defined( 'SBI_STORE_URL' ) ) {
 	define( 'SBI_STORE_URL', 'https://smashballoon.com/' );
@@ -33,11 +34,11 @@ if ( ! defined( 'SBI_PLUGIN_NAME' ) ) {
 	define( 'SBI_PLUGIN_NAME', 'Instagram Feed Free' );
 }
 if ( ! defined( 'SBIVER' ) ) {
-	define( 'SBIVER', '6.4.3' );
+	define( 'SBIVER', '6.5.1' );
 }
 // Db version.
 if ( ! defined( 'SBI_DBVERSION' ) ) {
-	define( 'SBI_DBVERSION', '2.2' );
+	define( 'SBI_DBVERSION', '2.3' );
 }
 
 // Upload folder name for local image files for posts
@@ -184,6 +185,8 @@ if ( ! function_exists( 'sb_instagram_feed_init' ) )
 				$sbi_sitehealth->load();
 			}
 
+			$recommended_blocks = new RecommendedBlocks();
+			$recommended_blocks->setup();
 		}
 		include_once trailingslashit( SBI_PLUGIN_DIR ) . 'widget.php';
 
@@ -441,7 +444,8 @@ if ( ! function_exists( 'sb_instagram_feed_init' ) )
             sizes VARCHAR(1000) DEFAULT '' NOT NULL,
             aspect_ratio DECIMAL (4,2) DEFAULT 0 NOT NULL,
             images_done TINYINT(1) DEFAULT 0 NOT NULL,
-            last_requested DATE
+            last_requested DATE,
+			mime_type VARCHAR(100) DEFAULT '' NOT NULL
         ) $charset_collate;";
 			$wpdb->query( $sql );
 		}
@@ -829,7 +833,21 @@ if ( ! function_exists( 'sb_instagram_feed_init' ) )
 			update_option( 'sbi_db_version', SBI_DBVERSION );
 		}
 
+		if (version_compare($db_ver, '2.3', '<')) {
+			$sbi_statuses = get_option('sbi_statuses', array());
 
+			if (empty($sbi_statuses['database']['mime_type_column'])) {
+				global $wpdb;
+
+				$table_name = esc_sql($wpdb->prefix . SBI_INSTAGRAM_POSTS_TYPE);
+				$wpdb->query("ALTER TABLE $table_name ADD COLUMN mime_type VARCHAR(100) DEFAULT '' NOT NULL");
+
+				$sbi_statuses['database']['mime_type_column'] = true;
+				update_option('sbi_statuses', $sbi_statuses);
+			}
+
+			update_option('sbi_db_version', SBI_DBVERSION);
+		}
 	}
 
 	add_action( 'wp_loaded', 'sbi_check_for_db_updates' );
@@ -976,6 +994,7 @@ if ( ! function_exists( 'sb_instagram_feed_init' ) )
 
 		delete_option( 'sbi_hashtag_ids' );
 		delete_option( 'sbi_local_avatars' );
+		delete_option( 'sbi_local_avatars_info' );
 
 		/* End Platform Data */
 		if ( $sb_instagram_preserve_settings ) {

@@ -888,36 +888,37 @@ if(!sbi_js_exists) {
 
           if (typeof this.resizedImages[id]['sizes'] !== 'undefined') {
             var foundSizes = [];
+            var extension = (typeof this.resizedImages[id]['extension'] !== 'undefined') ? this.resizedImages[id]['extension'] : '.jpg';
             if (typeof this.resizedImages[id]['sizes']['full'] !== 'undefined') {
-              srcSet[640] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full.jpg';
+              srcSet[640] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full' + extension;
               foundSizes.push(640);
             }
             if (typeof this.resizedImages[id]['sizes']['low'] !== 'undefined') {
-              srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low.jpg';
+              srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low' + extension;
               foundSizes.push(320);
             }
             if (typeof this.resizedImages[id]['sizes']['thumb'] !== 'undefined') {
               foundSizes.push(150);
-              srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'thumb.jpg';
+              srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'thumb' + extension;
             }
             if (this.settings.favorLocal) {
               if (foundSizes.indexOf(640) === -1) {
                 if (foundSizes.indexOf(320) > -1) {
-                  srcSet[640] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low.jpg';
+                  srcSet[640] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low' + extension;
                 }
               }
               if (foundSizes.indexOf(320) === -1) {
                 if (foundSizes.indexOf(640) > -1) {
-                  srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full.jpg';
+                  srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full' + extension;
                 } else if (foundSizes.indexOf(150) > -1) {
-                  srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'thumb.jpg';
+                  srcSet[320] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'thumb' + extension;
                 }
               }
               if (foundSizes.indexOf(150) === -1) {
                 if (foundSizes.indexOf(320) > -1) {
-                  srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low.jpg';
+                  srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'low' + extension;
                 } else if (foundSizes.indexOf(640) > -1) {
-                  srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full.jpg';
+                  srcSet[150] = sb_instagram_js_options.resized_url + this.resizedImages[id].id + 'full' + extension;
                 }
               }
             }

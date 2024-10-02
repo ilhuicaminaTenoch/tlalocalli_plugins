@@ -59,6 +59,7 @@ var settings_data = {
     reloadSVG: sbi_settings.reloadSVG,
     checkmarCircleSVG: sbi_settings.checkmarCircleSVG,
     tooltipHelpSvg: sbi_settings.tooltipHelpSvg,
+    resetSVG: sbi_settings.resetSVG,
     tooltip: {
         text: '',
         hover: false
@@ -843,7 +844,7 @@ var sbiSettings = new Vue({
         },
         clearImageResizeCacheIcon: function () {
             if (this.optimizeCacheStatus === null) {
-                return;
+                return this.resetSVG;
             }
             if (this.optimizeCacheStatus == 'loading') {
                 return this.loaderSVG;

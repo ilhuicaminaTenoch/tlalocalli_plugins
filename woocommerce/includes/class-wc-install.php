@@ -259,6 +259,13 @@ class WC_Install {
 			'wc_update_910_add_launch_your_store_tour_option',
 			'wc_update_910_remove_obsolete_user_meta',
 		),
+		'9.2.0' => array(
+			'wc_update_920_add_wc_hooked_blocks_version_option',
+		),
+		'9.3.0' => array(
+			'wc_update_930_add_woocommerce_coming_soon_option',
+			'wc_update_930_migrate_user_meta_for_launch_your_store_tour',
+		),
 	);
 
 	/**
@@ -267,6 +274,13 @@ class WC_Install {
 	 * @var string
 	 */
 	const NEWLY_INSTALLED_OPTION = 'woocommerce_newly_installed';
+
+	/**
+	 * Option name used to track new installation versions of WooCommerce.
+	 *
+	 * @var string
+	 */
+	const INITIAL_INSTALLED_VERSION = 'woocommerce_initial_installed_version';
 
 	/**
 	 * Option name used to uniquely identify installations of WooCommerce.
@@ -282,6 +296,7 @@ class WC_Install {
 		add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
 		add_action( 'init', array( __CLASS__, 'manual_database_update' ), 20 );
 		add_action( 'woocommerce_newly_installed', array( __CLASS__, 'maybe_enable_hpos' ), 20 );
+		add_action( 'woocommerce_newly_installed', array( __CLASS__, 'add_coming_soon_option' ), 20 );
 		add_action( 'admin_init', array( __CLASS__, 'wc_admin_db_update_notice' ) );
 		add_action( 'admin_init', array( __CLASS__, 'add_admin_note_after_page_created' ) );
 		add_action( 'woocommerce_run_update_callback', array( __CLASS__, 'run_update_callback' ) );
@@ -312,6 +327,13 @@ class WC_Install {
 			do_action_deprecated( 'woocommerce_admin_newly_installed', array(), '6.5.0', 'woocommerce_newly_installed' );
 
 			update_option( self::NEWLY_INSTALLED_OPTION, 'no' );
+
+			/**
+			 * This option is used to track the initial version of WooCommerce that was installed.
+			 *
+			 * @since 9.2.0
+			 */
+			add_option( self::INITIAL_INSTALLED_VERSION, WC()->version, '', false );
 		}
 	}
 
@@ -967,6 +989,17 @@ class WC_Install {
 			$feature_controller = wc_get_container()->get( FeaturesController::class );
 			$feature_controller->change_feature_enable( 'custom_order_tables', true );
 		}
+	}
+
+	/**
+	 * Add the woocommerce_coming_soon option for new shops.
+	 *
+	 * Ensure that the option is set for all shops, even if core profiler is disabled on the host.
+	 *
+	 * @since 9.3.0
+	 */
+	public static function add_coming_soon_option() {
+		add_option( 'woocommerce_coming_soon', 'no' );
 	}
 
 	/**
@@ -1636,6 +1669,7 @@ CREATE TABLE {$wpdb->prefix}wc_download_log (
 CREATE TABLE {$wpdb->prefix}wc_product_meta_lookup (
   `product_id` bigint(20) NOT NULL,
   `sku` varchar(100) NULL default '',
+  `global_unique_id` varchar(100) NULL default '',
   `virtual` tinyint(1) NULL default 0,
   `downloadable` tinyint(1) NULL default 0,
   `min_price` decimal(19,4) NULL default NULL,

@@ -225,11 +225,12 @@ class SB_Instagram_Parse {
 				 && $resized_images[ $post_id ]['id'] !== 'pending'
 				 && $resized_images[ $post_id ]['id'] !== 'video'
 				 && $resized_images[ $post_id ]['id'] !== 'error' ) {
+				$extension = isset( $resized_images[ $post_id ]['extension'] ) ? $resized_images[ $post_id ]['extension'] : '.jpg';
 				if ( isset( $resized_images[ $post_id ]['sizes']['full'] ) ) {
-					$media_urls['640'] = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'full.jpg';
+					$media_urls['640'] = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'full' . $extension;
 				}
 				if ( isset( $resized_images[ $post_id ]['sizes']['low'] ) ) {
-					$media_urls['320'] = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'low.jpg';
+					$media_urls['320'] = sbi_get_resized_uploads_url() . $resized_images[ $post_id ]['id'] . 'low' . $extension;
 				}
 			}
 		}

@@ -136,8 +136,11 @@ class CTF_Global_Settings {
 		/**
 		 * Feeds Tab
 		 */
-		$ctf_settings['custom_css']    			= $feeds['customCSS'];
-		$ctf_settings['custom_js'] 				= $feeds['customJS'];
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$ctf_settings['custom_css'] = $feeds['customCSS'];
+			$ctf_settings['custom_js']  = $feeds['customJS'];
+		}
+
 		$ctf_settings['gdpr'] 			        = sanitize_text_field( $feeds['gdpr'] );
 		$ctf_settings['ctf_caching_type']    	= sanitize_text_field( $feeds['cachingType'] );
 		$ctf_settings['cache_time']    			= sanitize_text_field( $feeds['cacheTime'] );
@@ -1250,6 +1253,11 @@ class CTF_Global_Settings {
 			$ctf_site_access_token = $ctf_settings[ CTF_SITE_ACCESS_TOKEN_KEY ];
 		}
 
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$custom_css = isset( $ctf_settings['custom_css'] ) ? wp_strip_all_tags( stripslashes( $ctf_settings['custom_css'] ) ) : '';
+			$custom_js = isset( $ctf_settings['custom_js'] ) ? stripslashes( $ctf_settings['custom_js'] ) : '';
+		}
+
 		return array(
 			'general' => array(
 				'preserveSettings' => $ctf_preserve_settings,
@@ -1266,8 +1274,8 @@ class CTF_Global_Settings {
 				'cacheTime'		=> $cache_time,
 				'gdpr'				=> $ctf_settings['gdpr'],
 				'gdprPlugin'		=> $active_gdpr_plugin,
-				'customCSS'			=> isset( $ctf_settings['custom_css'] ) ? stripslashes( $ctf_settings['custom_css'] ) : '',
-				'customJS'			=> isset( $ctf_settings['custom_js'] ) ? stripslashes( $ctf_settings['custom_js'] ) : '',
+				'customCSS'			=> $custom_css,
+				'customJS'			=> $custom_js,
 			),
 			'translation' => array(
 				'retweetedtext' => $ctf_settings['retweetedtext'],

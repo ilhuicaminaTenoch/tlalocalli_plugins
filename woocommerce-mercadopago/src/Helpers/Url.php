@@ -2,18 +2,13 @@
 
 namespace MercadoPago\Woocommerce\Helpers;
 
-use MercadoPago\Woocommerce\Helpers\Form;
-
 if (!defined('ABSPATH')) {
     exit;
 }
 
 final class Url
 {
-    /**
-     * @var Strings
-     */
-    private $strings;
+    private Strings $strings;
 
     /**
      * Url constructor
@@ -171,7 +166,7 @@ final class Url
      *
      * @return bool
      */
-    public function validatePage(string $expectedPage, string $currentPage = null, bool $allowPartialMatch = false): bool
+    public function validatePage(string $expectedPage, ?string $currentPage = null, bool $allowPartialMatch = false): bool
     {
         if (!$currentPage) {
             $currentPage = $this->getCurrentPage();
@@ -189,7 +184,7 @@ final class Url
      *
      * @return bool
      */
-    public function validateSection(string $expectedSection, string $currentSection = null, bool $allowPartialMatch = true): bool
+    public function validateSection(string $expectedSection, ?string $currentSection = null, bool $allowPartialMatch = true): bool
     {
         if (!$currentSection) {
             $currentSection = $this->getCurrentSection();
@@ -207,7 +202,7 @@ final class Url
      *
      * @return bool
      */
-    public function validateUrl(string $expectedUrl, string $currentUrl = null, bool $allowPartialMatch = true): bool
+    public function validateUrl(string $expectedUrl, ?string $currentUrl = null, bool $allowPartialMatch = true): bool
     {
         if (!$currentUrl) {
             $currentUrl = $this->getCurrentUrl();

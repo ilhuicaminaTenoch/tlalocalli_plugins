@@ -122,8 +122,10 @@ class SBI_Global_Settings {
 		/**
 		 * Feeds Tab
 		 */
-		$sbi_settings['sb_instagram_custom_css']    = $feeds['customCSS'];
-		$sbi_settings['sb_instagram_custom_js'] 	= $feeds['customJS'];
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$sbi_settings['sb_instagram_custom_css']    = $feeds['customCSS'];
+			$sbi_settings['sb_instagram_custom_js'] 	= $feeds['customJS'];
+		}
 		$sbi_settings['gdpr'] 			            = sanitize_text_field( $feeds['gdpr'] );
 		$sbi_settings['sbi_cache_cron_interval']    = sanitize_text_field( $feeds['cronInterval'] );
 		$sbi_settings['sbi_cache_cron_time']        = sanitize_text_field( $feeds['cronTime'] );
@@ -134,6 +136,7 @@ class SBI_Global_Settings {
 		 */
 		$sbi_settings['sb_instagram_ajax_theme'] = sanitize_text_field( $advanced['sbi_ajax'] );
 		$sbi_settings['sb_instagram_disable_resize'] = !(bool)$advanced['sbi_enable_resize'];
+		$sbi_settings['image_format'] = sanitize_text_field($advanced['image_format']);
 		$sbi_settings['sb_ajax_initial'] = (bool)$advanced['sb_ajax_initial'];
 		$sbi_settings['enqueue_js_in_head'] = (bool)$advanced['sbi_enqueue_js_in_head'];
 		$sbi_settings['enqueue_css_in_shortcode'] = (bool)$advanced['sbi_enqueue_css_in_shortcode'];
@@ -1008,9 +1011,15 @@ class SBI_Global_Settings {
 					'helpText' => __( 'This would revert your CSS file for the feed to the file used in version 6.2. Enable this setting if your customizations are not working properly. ', 'instagram-feed' ) . '<a target="_blank" rel="noopener" href="https://smashballoon.com/doc/instagram-css-layout-changes/?utm_source=instagram-pro&utm_medium=settings-advanced&utm_campaign=63changes&utm_content=LearnMore">' . __('Learn More', 'instagram-feed') .'</a>',
 				),
 				'optimizeBox' => array(
-					'title' => __( 'Optimize Images', 'instagram-feed' ),
-					'helpText' => __( 'This will create multiple local copies of images in different sizes. The plugin then displays the smallest version based on the size of the feed.', 'instagram-feed' ),
-					'reset' => __( 'Reset', 'instagram-feed' ),
+					'header'   => __('Image Optimization (Recommended)', 'instagram-feed'),
+					'helpText' => __('Creates multiple local copies of image in different sizes and uses smallest size based on where it is displayed. ', 'instagram-feed') . '<strong>' . __('Uses local Wordpress storage.', 'instagram-feed') . '</strong>',
+					'reset'    => __('Reset Image Storage', 'instagram-feed'),
+					'title'    => __('Use dynamic sizes', 'instagram-feed'),
+					'formatTitle' => __('Default Image Format', 'instagram-feed'),
+					'formats'  => array(
+						'webp' => __('WebP', 'instagram-feed'),
+						'jpg' => __('JPG', 'instagram-feed'),
+					),
 				),
 				'usageBox' => array(
 					'title' => __( 'Usage Tracking', 'instagram-feed' ),
@@ -1136,7 +1145,8 @@ class SBI_Global_Settings {
 			'reloadSVG' => '<svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M15.8335 3.66667L12.5002 7H15.0002C15.0002 8.32608 14.4734 9.59785 13.5357 10.5355C12.598 11.4732 11.3262 12 10.0002 12C9.16683 12 8.3585 11.7917 7.66683 11.4167L6.45016 12.6333C7.51107 13.3085 8.74261 13.667 10.0002 13.6667C11.7683 13.6667 13.464 12.9643 14.7142 11.714C15.9644 10.4638 16.6668 8.76811 16.6668 7H19.1668L15.8335 3.66667ZM5.00016 7C5.00016 5.67392 5.52695 4.40215 6.46463 3.46447C7.40231 2.52678 8.67408 2 10.0002 2C10.8335 2 11.6418 2.20833 12.3335 2.58333L13.5502 1.36667C12.4893 0.691461 11.2577 0.332984 10.0002 0.333334C8.23205 0.333334 6.53636 1.03571 5.28612 2.28596C6.03587 3.5362 3.3335 5.23189 3.3335 7H0.833496L4.16683 10.3333L7.50016 7" fill="#141B38"/></svg>',
 			'tooltipHelpSvg' => '<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.1665 8H10.8332V6.33333H9.1665V8ZM9.99984 17.1667C6.32484 17.1667 3.33317 14.175 3.33317 10.5C3.33317 6.825 6.32484 3.83333 9.99984 3.83333C13.6748 3.83333 16.6665 6.825 16.6665 10.5C16.6665 14.175 13.6748 17.1667 9.99984 17.1667ZM9.99984 2.16666C8.90549 2.16666 7.82186 2.38221 6.81081 2.801C5.79976 3.21979 4.8811 3.83362 4.10728 4.60744C2.54448 6.17024 1.6665 8.28986 1.6665 10.5C1.6665 12.7101 2.54448 14.8298 4.10728 16.3926C4.8811 17.1664 5.79976 17.7802 6.81081 18.199C7.82186 18.6178 8.90549 18.8333 9.99984 18.8333C12.21 18.8333 14.3296 17.9554 15.8924 16.3926C17.4552 14.8298 18.3332 12.7101 18.3332 10.5C18.3332 9.40565 18.1176 8.32202 17.6988 7.31097C17.28 6.29992 16.6662 5.38126 15.8924 4.60744C15.1186 3.83362 14.1999 3.21979 13.1889 2.801C12.1778 2.38221 11.0942 2.16666 9.99984 2.16666ZM9.1665 14.6667H10.8332V9.66666H9.1665V14.6667Z" fill="#434960"/></svg>',
-			'svgIcons' => \InstagramFeed\Builder\SBI_Feed_Builder::builder_svg_icons()
+			'svgIcons' => \InstagramFeed\Builder\SBI_Feed_Builder::builder_svg_icons(),
+			'resetSVG' => '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.668 3.33317L10.0013 5.99984H12.0013C12.0013 7.0607 11.5799 8.07812 10.8297 8.82826C10.0796 9.57841 9.06217 9.99984 8.0013 9.99984C7.33463 9.99984 6.68797 9.83317 6.13463 9.53317L5.1613 10.5065C6.01003 11.0467 6.99526 11.3335 8.0013 11.3332C9.41579 11.3332 10.7723 10.7713 11.7725 9.77107C12.7727 8.77088 13.3346 7.41432 13.3346 5.99984H15.3346L12.668 3.33317ZM4.0013 5.99984C4.0013 4.93897 4.42273 3.92156 5.17287 3.17141C5.92302 2.42126 6.94044 1.99984 8.0013 1.99984C8.66797 1.99984 9.31464 2.1665 9.86797 2.4665L10.8413 1.49317C9.99257 0.953006 9.00734 0.666224 8.0013 0.666504C6.58681 0.666504 5.23026 1.22841 4.23007 2.2286C3.22987 3.2288 2.66797 4.58535 2.66797 5.99984H0.667969L3.33464 8.6665L6.0013 5.99984" fill="#141B38"/></svg>'
 		);
 
 		$newly_retrieved_source_connection_data = \InstagramFeed\Builder\SBI_Source::maybe_source_connection_data();
@@ -1207,7 +1217,13 @@ class SBI_Global_Settings {
 		$sbi_ajax = $sbi_settings['sb_instagram_ajax_theme'];
 		$active_gdpr_plugin = \SB_Instagram_GDPR_Integrations::gdpr_plugins_active();
 		$sbi_preserve_setitngs = $sbi_settings['sb_instagram_preserve_settings'];
+		$custom_css = '';
+		$custom_js = '';
 
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$custom_css = isset( $sbi_settings['sb_instagram_custom_css'] ) ? wp_strip_all_tags( stripslashes( $sbi_settings['sb_instagram_custom_css'] ) ) : '';
+			$custom_js = isset( $sbi_settings['sb_instagram_custom_js'] ) ? stripslashes( $sbi_settings['sb_instagram_custom_js'] ) : '';
+		}
 		return array(
 			'general' => array(
 				'preserveSettings' => $sbi_preserve_setitngs
@@ -1219,11 +1235,12 @@ class SBI_Global_Settings {
 				'cronAmPm'			=> $sbi_cache_cron_am_pm,
 				'gdpr'				=> $sbi_settings['gdpr'],
 				'gdprPlugin'		=> $active_gdpr_plugin,
-				'customCSS'			=> isset( $sbi_settings['sb_instagram_custom_css'] ) ? wp_strip_all_tags( stripslashes( $sbi_settings['sb_instagram_custom_css'] ) ) : '',
-				'customJS'			=> isset( $sbi_settings['sb_instagram_custom_js'] ) ? stripslashes( $sbi_settings['sb_instagram_custom_js'] ) : '',
+				'customCSS'			=> $custom_css,
+				'customJS'			=> $custom_js,
 			),
 			'advanced' => array(
 				'sbi_enable_resize' => !$sbi_settings['sb_instagram_disable_resize'],
+				'image_format' => $sbi_settings['image_format'],
 				'usage_tracking' => $usage_tracking['enabled'],
 				'sbi_ajax' => $sbi_ajax,
 				'sb_ajax_initial' => $sbi_settings['sb_ajax_initial'],

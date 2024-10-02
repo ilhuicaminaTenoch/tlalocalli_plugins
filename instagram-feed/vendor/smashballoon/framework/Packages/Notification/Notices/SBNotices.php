@@ -15,6 +15,7 @@ if (!\defined('ABSPATH')) {
 }
 /**
  * Get all notices and display error warning or success notices
+ * @internal
  */
 class SBNotices
 {
@@ -92,16 +93,16 @@ class SBNotices
         $this->plugin_type = sb_get_plugin_type($this->plugin_slug);
         $plugin_slug = \str_replace('-', '_', $plugin_slug);
         $this->plugin = \str_replace('_pro', '', $plugin_slug);
-        $this->notice_option = sanitize_key('sb_' . $this->plugin . '_notices');
-        $this->group_notice_option = sanitize_key('sb_' . $this->plugin . '_group_notices');
-        $this->notices = get_option($this->notice_option, []);
-        $this->screen = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
-        $this->group_notices = get_option($this->group_notice_option, []);
+        $this->notice_option = \sanitize_key('sb_' . $this->plugin . '_notices');
+        $this->group_notice_option = \sanitize_key('sb_' . $this->plugin . '_group_notices');
+        $this->notices = \get_option($this->notice_option, []);
+        $this->screen = isset($_GET['page']) ? \sanitize_text_field(\wp_unslash($_GET['page'])) : '';
+        $this->group_notices = \get_option($this->group_notice_option, []);
         $notice_hook = sb_map_notice_hooks($this->plugin_slug);
-        add_action('admin_notices', [$this, 'display_notices']);
-        add_action($notice_hook, [$this, 'display_notices']);
-        add_action('admin_init', [$this, 'dismiss_notices'], 20);
-        add_filter('safe_style_css', function ($styles) {
+        \add_action('admin_notices', [$this, 'display_notices']);
+        \add_action($notice_hook, [$this, 'display_notices']);
+        \add_action('admin_init', [$this, 'dismiss_notices'], 20);
+        \add_filter('safe_style_css', function ($styles) {
             $styles[] = 'display';
             return $styles;
         });
@@ -179,7 +180,7 @@ class SBNotices
     private function validate_notices()
     {
         $notices = $this->get_notices();
-        $has_admin_errors = apply_filters('sb_' . $this->plugin . '_has_admin_errors', \false);
+        $has_admin_errors = \apply_filters('sb_' . $this->plugin . '_has_admin_errors', \false);
         if ($notices) {
             foreach ($notices as $key => $notice) {
                 if (!isset($notice['type']) || !isset($notice['message'])) {
@@ -221,7 +222,7 @@ class SBNotices
                     if (!\is_array($capability)) {
                         $capability = [$capability];
                     }
-                    if (!current_user_can($capability[0])) {
+                    if (!\current_user_can($capability[0])) {
                         unset($notices[$key]);
                     }
                 }
@@ -241,7 +242,7 @@ class SBNotices
                 }
                 return 255;
             });
-            $notices = apply_filters('sb_' . $this->plugin . '_admin_notices', $notices);
+            $notices = \apply_filters('sb_' . $this->plugin . '_admin_notices', $notices);
             $this->set_notices($notices);
         }
     }
@@ -279,7 +280,7 @@ class SBNotices
             return;
         }
         // Merge with defaults.
-        $notice = wp_parse_args($args, ['id' => $id, 'type' => $type, 'message' => '', 'title' => '', 'icon' => '', 'class' => '', 'dismissible' => \false, 'priority' => 255, 'start_date' => \false, 'end_date' => \false]);
+        $notice = \wp_parse_args($args, ['id' => $id, 'type' => $type, 'message' => '', 'title' => '', 'icon' => '', 'class' => '', 'dismissible' => \false, 'priority' => 255, 'start_date' => \false, 'end_date' => \false]);
         // Add notice to notices array.
         $notices[$id] = $notice;
         if ($group) {
@@ -288,7 +289,7 @@ class SBNotices
         }
         // Update notices.
         $this->set_notices($notices);
-        update_option($this->notice_option, $notices);
+        \update_option($this->notice_option, $notices);
         // Handle group notices.
         if ($group) {
             $group_notices = $this->get_group_notices();
@@ -297,7 +298,7 @@ class SBNotices
             }
             $group_notices[$group][] = $id;
             $this->set_group_notices($group_notices);
-            update_option($this->group_notice_option, $group_notices);
+            \update_option($this->group_notice_option, $group_notices);
         }
     }
     /**
@@ -319,12 +320,12 @@ class SBNotices
                 if (isset($group_notices[$group_id])) {
                     $group_notices[$group_id] = \array_diff($group_notices[$group_id], [$id]);
                     $this->set_group_notices($group_notices);
-                    update_option($this->group_notice_option, $group_notices);
+                    \update_option($this->group_notice_option, $group_notices);
                 }
             }
             unset($notices[$id]);
             $this->set_notices($notices);
-            update_option($this->notice_option, $notices);
+            \update_option($this->notice_option, $notices);
         }
     }
     /**
@@ -336,8 +337,8 @@ class SBNotices
     {
         $this->set_notices([]);
         $this->set_group_notices([]);
-        delete_option($this->notice_option);
-        delete_option($this->group_notice_option);
+        \delete_option($this->notice_option);
+        \delete_option($this->group_notice_option);
     }
     /**
      * Dismiss notices if the GET param is set.
@@ -347,28 +348,28 @@ class SBNotices
     public function dismiss_notices()
     {
         if (isset($_GET['sb-dismiss-notice']) && isset($_GET['_sb_notice_nonce'])) {
-            if (!wp_verify_nonce(wp_unslash($_GET['_sb_notice_nonce']), 'sb_dismiss_notice_nonce')) {
-                wp_die(esc_html__('Action failed. Please refresh the page and retry.', 'sb-notices'));
+            if (!\wp_verify_nonce(\wp_unslash($_GET['_sb_notice_nonce']), 'sb_dismiss_notice_nonce')) {
+                \wp_die(\esc_html__('Action failed. Please refresh the page and retry.', 'sb-notices'));
             }
-            $notice_id = sanitize_text_field(wp_unslash($_GET['sb-dismiss-notice']));
+            $notice_id = \sanitize_text_field(\wp_unslash($_GET['sb-dismiss-notice']));
             $notices = $this->get_notices();
             if (isset($notices[$notice_id])) {
                 $notice = $notices[$notice_id];
                 if (!$notice['dismissible']) {
-                    wp_die(esc_html__('Notice cannot be dismissed.', 'sb-notices'));
+                    \wp_die(\esc_html__('Notice cannot be dismissed.', 'sb-notices'));
                 }
                 if (isset($notice['capability']) && !empty($notice['capability'])) {
                     $capability = $notice['capability'];
                     if (!\is_array($capability)) {
                         $capability = [$capability];
                     }
-                    if (!current_user_can($capability[0])) {
-                        wp_die(esc_html__('You do not have permission to dismiss the notice.', 'sb-notices'));
+                    if (!\current_user_can($capability[0])) {
+                        \wp_die(\esc_html__('You do not have permission to dismiss the notice.', 'sb-notices'));
                     }
                 }
                 $this->remove_notice($notice_id);
-                update_user_meta(get_current_user_id(), 'sb_notice_' . $notice_id . '_dismissed', \true);
-                do_action('sb_notice_' . $notice_id . '_dismissed', $notice_id);
+                \update_user_meta(\get_current_user_id(), 'sb_notice_' . $notice_id . '_dismissed', \true);
+                \do_action('sb_notice_' . $notice_id . '_dismissed', $notice_id);
             }
         }
     }

@@ -7,15 +7,13 @@ namespace Smashballoon\Customizer\V3;
  *
  * @since 1.0
  */
-
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+    exit;
+    // Exit if accessed directly
 }
-
-abstract class SB_SettingsPage_Tab {
-
-
-     /**
+abstract class SB_SettingsPage_Tab
+{
+    /**
      * Get the Settings Tab
      * Merge Both Tab Info + Tab Sections
      *
@@ -23,17 +21,11 @@ abstract class SB_SettingsPage_Tab {
      *
      * @return array
      */
-    function get_tab(){
-        $tab = array_merge(
-            $this->tab_info(),
-            [
-                'sections'	=> $this->tab_sections()
-            ]
-        );
-
+    function get_tab()
+    {
+        $tab = array_merge($this->tab_info(), ['sections' => $this->tab_sections()]);
         return $tab;
     }
-
     /**
      * Get the Settings Tab info
      *
@@ -42,8 +34,6 @@ abstract class SB_SettingsPage_Tab {
      * @return array
      */
     abstract protected function tab_info();
-
-
     /**
      * Get the Settings Tab Sections
      *
@@ -52,5 +42,4 @@ abstract class SB_SettingsPage_Tab {
      * @return array
      */
     abstract protected function tab_sections();
-
 }

@@ -4,7 +4,7 @@ Tags: ecommerce, mercadopago, woocommerce
 Requires at least: 6.3
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 7.6.3
+Stable tag: 7.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -135,9 +135,13 @@ Set up both the plugin and the checkouts you want to activate on your payment av
 Check out our <a href="https://www.mercadopago.com.br/developers/pt/plugins_sdks/plugins/official/woo-commerce/">official documentation</a> for more information on the specific fields to configure.
 
 == Changelog ==
+= v7.8.0 (23/09/2024) =
+* Changed:
+- Rebranded and revamped the CreditsGateway, improving overall user experience and aligning the visual identity with our updated brand guidelines, making it more intuitive and modern.
+- Compressed several images without losing quality, which reduces the plugin bundle size and leads to faster download and installation times, improving performance without sacrificing visual fidelity.
+- Removed implicit nullable parameter marking and replaced it with explicit nullable types, enhancing code clarity and reducing potential bugs related to type handling, thus improving code reliability.
 
-* Fix:
-- Fix the size of the card logos at checkout.
-- Fix the problem of not showing the disclaimer about card fees for some countries.
+* Fixed
+- Corrected the support component's link URL, ensuring users are directed to the appropriate help resources.
 
 [See changelog for all versions](https://github.com/mercadopago/cart-woocommerce/blob/main/CHANGELOG.md).

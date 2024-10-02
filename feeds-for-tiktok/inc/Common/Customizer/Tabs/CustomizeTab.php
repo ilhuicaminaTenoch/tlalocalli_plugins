@@ -139,6 +139,12 @@ class CustomizeTab extends SB_Sidebar_Tab
 						'label' => __('Carousel', 'feeds-for-tiktok'),
 						'upsellModal' => 'carouselModal'
 					],
+					[
+						'value' => 'gallery',
+						'icon'  => 'gallery',
+						'label' => __('Gallery', 'feeds-for-tiktok'),
+						'upsellModal' => 'galleryModal'
+					]
 				],
 			],
 			[// Spacing.
@@ -379,6 +385,44 @@ class CustomizeTab extends SB_Sidebar_Tab
 						'options' => [
 							'enabled'  => true,
 							'disabled' => false,
+						],
+					],
+				],
+			],
+			[ // Gallery Columns.
+				'type'      => 'group',
+				'id'        => 'gallery_columns',
+				'heading'   => __('Columns', 'feeds-for-tiktok'),
+				'condition' => [
+					'layout' => [
+						'gallery',
+					],
+				],
+				'controls'  => [
+					[
+						'type'     => 'list',
+						'controls' => [
+							[
+								'type'        => 'number',
+								'id'          => 'galleryDesktopColumns',
+								'min'         => 1,
+								'max'         => 6,
+								'leadingIcon' => 'desktop',
+							],
+							[
+								'type'        => 'number',
+								'id'          => 'galleryTabletColumns',
+								'min'         => 1,
+								'max'         => 6,
+								'leadingIcon' => 'tablet',
+							],
+							[
+								'type'        => 'number',
+								'id'          => 'galleryMobileColumns',
+								'min'         => 1,
+								'max'         => 6,
+								'leadingIcon' => 'mobile',
+							],
 						],
 					],
 				],
@@ -1105,7 +1149,12 @@ class CustomizeTab extends SB_Sidebar_Tab
 					[
 						'value' => 'lightbox',
 						'label' => __('In a lightbox', 'feeds-for-tiktok'),
-					]
+					],
+					[
+						'value' => 'inline',
+						'label' => __('Inline', 'feeds-for-tiktok'),
+						'upsellModal' => 'playerExperienceModal'
+					],
 				],
 			],
 		];

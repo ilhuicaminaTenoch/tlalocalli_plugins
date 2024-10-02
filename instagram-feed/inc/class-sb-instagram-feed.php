@@ -480,7 +480,7 @@ class SB_Instagram_Feed
 
 				$id_string = "'" . implode( "','", $ids ) . "'";
 				$results = $wpdb->get_results( "
-			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes
+			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes, p.mime_type
 			FROM $posts_table_name AS p
 			INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 			WHERE p.instagram_id IN($id_string)
@@ -494,10 +494,13 @@ class SB_Instagram_Feed
 						if ( ! is_array( $sizes ) ) {
 							$sizes = array( 'full' => 640 );
 						}
+						$extension = isset( $result['mime_type'] ) &&  $result['mime_type'] === 'image/webp' 
+							? '.webp' : '.jpg';
 						$return[ $result['instagram_id'] ] = array(
 							'id' => $result['media_id'],
 							'ratio' => $result['aspect_ratio'],
-							'sizes' => $sizes
+							'sizes' => $sizes,
+							'extension' => $extension
 						);
 					}
 
@@ -507,7 +510,7 @@ class SB_Instagram_Feed
 				$num = $num_or_array_of_ids;
 
 				$results = $wpdb->get_results( $wpdb->prepare( "
-			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes
+			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes, p.mime_type
 			FROM $posts_table_name AS p
 			INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 			WHERE f.feed_id = %s
@@ -523,10 +526,13 @@ class SB_Instagram_Feed
 						if ( ! is_array( $sizes ) ) {
 							$sizes = array( 'full' => 640 );
 						}
+						$extension = isset( $result['mime_type'] ) &&  $result['mime_type'] === 'image/webp' 
+							? '.webp' : '.jpg';
 						$return[ $result['instagram_id'] ] = array(
 							'id' => $result['media_id'],
 							'ratio' => $result['aspect_ratio'],
-							'sizes' => $sizes
+							'sizes' => $sizes,
+							'extension' => $extension
 						);
 					}
 
