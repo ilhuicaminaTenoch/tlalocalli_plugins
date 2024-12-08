@@ -3,10 +3,10 @@ Contributors: smashballoon, craig-at-smash-balloon, am, smub
 Tags: Instagram, Instagram feed, Instagram photos, Instagram widget, Instagram gallery
 Requires at least: 4.1
 Tested up to: 6.7
-Stable tag: 6.6.0
+Stable tag: 6.6.1
 Requires PHP: 5.6
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Formerly "Instagram Feed". Display clean, customizable, and responsive Instagram feeds from multiple accounts. Supports Instagram oEmbeds.
 
@@ -209,10 +209,10 @@ We've made it super easy. Just follow the steps outlined when onboarding and you
 There are a few common reasons for this:
 
 * **Your Access Token may not be valid.** Try clicking on the blue Instagram login button on the plugin's Settings page again and copy and paste the Instagram token it gives you into the plugin's Access Token field.
-* **The plugin's JavaScript file isn't included in your page.** This is most likely because your WordPress theme is missing the WordPress [wp_footer](http://codex.wordpress.org/Function_Reference/wp_footer) function which is required for plugins to be able to add their JavaScript files to your page. You can fix this by opening your theme's **footer.php** file and adding the following directly before the closing </body> tag between two php tags: `wp_footer();`
+* **The plugin's JavaScript file isn't included in your page.** This is most likely because your WordPress theme is missing the WordPress [wp_footer](https://codex.wordpress.org/Function_Reference/wp_footer) function which is required for plugins to be able to add their JavaScript files to your page. You can fix this by opening your theme's **footer.php** file and adding the following directly before the closing </body> tag between two php tags: `wp_footer();`
 * **Your website may contain a JavaScript error which is preventing JavaScript from running.** The plugin uses JavaScript to load the Instagram photos into your page and so needs JavaScript to be running in order to work. You would need to remove any existing JavaScript errors on your website for the plugin to be able to load in your feed.
 
-If you're still having an issue displaying your feed then please open a ticket in the [Support forum](http://wordpress.org/support/plugin/instagram-feed 'Instagram Feed Support Forum') with a link to the page where you're trying to display the Instagram feed and, if possible, a link to your Instagram account.
+If you're still having an issue displaying your feed then please open a ticket in the [Support forum](https://wordpress.org/support/plugin/instagram-feed 'Instagram Feed Support Forum') with a link to the page where you're trying to display the Instagram feed and, if possible, a link to your Instagram account.
 
 = Are there any security issues with using an Access Token on my site? =
 
@@ -220,11 +220,11 @@ Nope. The Access Token used in the plugin is a "read only" token, which means th
 
 = Can I view the full-size photos or play Instagram videos directly on my website?  =
 
-This is a feature of the [Pro version](http://smashballoon.com/instagram-feed/?utm_campaign=instagram-free-readme&utm_source=faqs&utm_medium=fullsize 'Instagram Feed Pro') of the plugin, which allows you to view the photos in a pop-up lightbox, support videos, display captions, display photos by hashtag + more!
+This is a feature of the [Pro version](https://smashballoon.com/instagram-feed/?utm_campaign=instagram-free-readme&utm_source=faqs&utm_medium=fullsize 'Instagram Feed Pro') of the plugin, which allows you to view the photos in a pop-up lightbox, support videos, display captions, display photos by hashtag + more!
 
 = How do I embed my feed directly into a WordPress page template? =
 
-You can embed your feed directly into a template file by using the WordPress [do_shortcode](http://codex.wordpress.org/Function_Reference/do_shortcode) function: `<?php echo do_shortcode('[instagram-feed]'); ?>`.
+You can embed your feed directly into a template file by using the WordPress [do_shortcode](https://codex.wordpress.org/Function_Reference/do_shortcode) function: `<?php echo do_shortcode('[instagram-feed]'); ?>`.
 
 = My Feed Stopped Working – All I see is a Loading Symbol =
 
@@ -293,7 +293,7 @@ There are plenty of options to customize your feed! See the list below:
 * **follow text color** - The text color of the 'Follow on Instagram' button.
 * **follow text** - The text used for the 'Follow on Instagram' button - Example: "Follow me"
 
-For more options, check out the [Pro version](http://smashballoon.com/instagram-feed/?utm_campaign=instagram-free-readme&utm_source=whatare&utm_medium=proshortcode 'Instagram Feed Pro').
+For more options, check out the [Pro version](https://smashballoon.com/instagram-feed/?utm_campaign=instagram-free-readme&utm_source=whatare&utm_medium=proshortcode 'Instagram Feed Pro').
 
 For more FAQs related to the Instagram Feed plugin please visit the [FAQ section](https://smashballoon.com/instagram-feed/support/faq/?utm_campaign=instagram-free-readme&utm_source=whatare&utm_medium=faqs 'Instagram Feed plugin FAQs') on our website.
 
@@ -307,6 +307,9 @@ For more FAQs related to the Instagram Feed plugin please visit the [FAQ section
 6. Just copy and paste the shortcode into any page, post or widget on your site. You can also use the block editor with our handy Instagram Feed block.
 
 == Changelog ==
+= 6.6.1 =
+* Tweak: Added support for our new [Feed Analytics](https://smashballoon.com/?utm_campaign=instagram-free-readme&utm_source=changelog&utm_medium=feedanalyticsannouncement) product. Get insights as to how your feeds are being used by site visitors.
+
 = 6.6.0 =
 * Important: For users with a personal account connection, you will need to reconnect your account before December 2024 after updating to version 6.6 or higher. [Learn more](https://smashballoon.com/doc/instagram-business-basic/?utm_campaign=instagram-free-readme&utm_source=changelog&utm_medium=basicdisplayapichange "Learn more")
 * New: Added support for GDPR Cookie Compliance by Moove Agency and Real Cookie Banner GDPR plugins.
