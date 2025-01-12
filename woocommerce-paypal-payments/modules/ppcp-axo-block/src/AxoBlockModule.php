@@ -22,6 +22,7 @@ use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ExtendingModule;
 use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ModuleClassNameIdTrait;
 use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ServiceModule;
 use WooCommerce\PayPalCommerce\Vendor\Psr\Container\ContainerInterface;
+use WooCommerce\PayPalCommerce\WcGateway\Helper\DCCGatewayConfiguration;
 
 /**
  * Class AxoBlockModule
@@ -91,7 +92,10 @@ class AxoBlockModule implements ServiceModule, ExtendingModule, ExecutableModule
 				 */
 				add_filter(
 					'woocommerce_paypal_payments_sdk_components_hook',
-					function( $components ) {
+					function( $components ) use ( $c ) {
+						if ( ! $c->has( 'axo.available' ) || ! $c->get( 'axo.available' ) ) {
+							return $components;
+						}
 						$components[] = 'fastlane';
 						return $components;
 					}
@@ -133,6 +137,14 @@ class AxoBlockModule implements ServiceModule, ExtendingModule, ExecutableModule
 				wp_enqueue_style( 'wc-ppcp-axo-block' );
 			}
 		);
+
+		add_action(
+			'wp_enqueue_scripts',
+			function () use ( $c ) {
+				$this->enqueue_paypal_insights_script( $c );
+			}
+		);
+
 		return true;
 	}
 
@@ -165,5 +177,43 @@ class AxoBlockModule implements ServiceModule, ExtendingModule, ExecutableModule
 		}
 
 		return $localized_script_data;
+	}
+
+	/**
+	 * Enqueues PayPal Insights analytics script for the Checkout block.
+	 *
+	 * @param ContainerInterface $c The service container.
+	 * @return void
+	 */
+	private function enqueue_paypal_insights_script( ContainerInterface $c ): void {
+		if ( ! has_block( 'woocommerce/checkout' ) || WC()->cart->is_empty() ) {
+			return;
+		}
+
+		$dcc_configuration = $c->get( 'wcgateway.configuration.dcc' );
+		if ( ! $dcc_configuration->use_fastlane() ) {
+			return;
+		}
+
+		$module_url    = $c->get( 'axoblock.url' );
+		$asset_version = $c->get( 'ppcp.asset-version' );
+
+		wp_register_script(
+			'wc-ppcp-paypal-insights',
+			untrailingslashit( $module_url ) . '/assets/js/PayPalInsightsLoader.js',
+			array( 'wp-plugins', 'wp-data', 'wp-element', 'wc-blocks-registry' ),
+			$asset_version,
+			true
+		);
+
+		wp_localize_script(
+			'wc-ppcp-paypal-insights',
+			'ppcpPayPalInsightsData',
+			array(
+				'isAxoEnabled' => true,
+			)
+		);
+
+		wp_enqueue_script( 'wc-ppcp-paypal-insights' );
 	}
 }

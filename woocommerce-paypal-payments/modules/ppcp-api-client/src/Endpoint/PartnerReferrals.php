@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class PartnerReferrals
+ *
+ * @see https://developer.paypal.com/docs/api/partner-referrals/v2/
  */
 class PartnerReferrals {
 
@@ -85,8 +87,7 @@ class PartnerReferrals {
 			$error = new RuntimeException(
 				__( 'Could not create referral.', 'woocommerce-paypal-payments' )
 			);
-			$this->logger->log(
-				'warning',
+			$this->logger->warning(
 				$error->getMessage(),
 				array(
 					'args'     => $args,
@@ -95,6 +96,7 @@ class PartnerReferrals {
 			);
 			throw $error;
 		}
+
 		$json        = json_decode( $response['body'] );
 		$status_code = (int) wp_remote_retrieve_response_code( $response );
 		if ( 201 !== $status_code ) {
@@ -102,8 +104,7 @@ class PartnerReferrals {
 				$json,
 				$status_code
 			);
-			$this->logger->log(
-				'warning',
+			$this->logger->warning(
 				$error->getMessage(),
 				array(
 					'args'     => $args,
@@ -122,8 +123,7 @@ class PartnerReferrals {
 		$error = new RuntimeException(
 			__( 'Action URL not found.', 'woocommerce-paypal-payments' )
 		);
-		$this->logger->log(
-			'warning',
+		$this->logger->warning(
 			$error->getMessage(),
 			array(
 				'args'     => $args,

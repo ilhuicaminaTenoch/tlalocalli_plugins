@@ -1,48 +1,78 @@
-.ppcp-r-payment-method-item {
-	display: flex;
-	align-items: center;
-
-	&:not(:last-child) {
-		padding-bottom: 32px;
-	}
-
-	&:not(:first-child) {
-		border-top: 1px solid $color-gray-400;
-		padding-top: 32px;
-	}
-
-	&__checkbox-wrap {
-		position: relative;
+.ppcp-r-settings-block__payment-methods {
+	&.ppcp-r-settings-block {
 		display: flex;
-		align-items: center;
+		flex-wrap: wrap;
+		flex-direction: row;
+		gap: 16px;
+	}
 
-		.ppcp-r__checkbox {
-			margin-right: 24px;
+	&__item {
+		display: flex;
+		align-items: flex-start;
+		width: calc(100% / 3 - 32px / 3);
+		border: 1px solid $color-gray-300;
+		padding: 16px;
+		border-radius: 8px;
+		min-height: 200px;
+
+		@media screen and (max-width: 767px) {
+		    width: calc(50% - 8px);
 		}
-	}
 
-	&__icon-wrap {
-		margin-right: 18px;
-	}
-
-	&__content {
-		padding-right: 24px;
-
-		p {
-			margin: 0;
+		@media screen and (max-width: 480px) {
+		    width: 100%;
 		}
-	}
 
-	&__title {
-		@include font(16, 20, 600);
-		color: $color-black;
-		margin: 0 0 8px 0;
-		display: block;
-	}
+		&__inner {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
 
-	button {
-		margin-left: auto;
-		@include font(13, 20, 400);
-		padding: 6px 12px !important;
+		&__title-wrapper {
+			display: flex;
+			align-items: center;
+			margin: 0 0 8px 0;
+			gap: 12px;
+		}
+
+		&__description {
+			p {
+				margin: 0;
+				color: $color-text-tertiary;
+				@include font(13, 20, 400);
+			}
+
+			margin: 0 0 12px 0;
+		}
+
+		&__title {
+			@include font(13, 20, 500);
+			color: $color-black;
+			display: block;
+		}
+
+		&__settings {
+			line-height: 0;
+			transition: 0.2s ease-out transform;
+			transform: rotate(0deg);
+			zoom: 1.005;
+
+			&:hover {
+				transform: rotate(45deg);
+				cursor: pointer;
+			}
+		}
+
+		button.is-secondary {
+			@include small-button;
+		}
+
+		&__footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: auto;
+		}
 	}
 }

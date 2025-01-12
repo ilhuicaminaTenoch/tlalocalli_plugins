@@ -97,9 +97,14 @@ class AdvancedCardPaymentMethod extends AbstractPaymentMethodType {
 		wp_register_script(
 			'ppcp-advanced-card-checkout-block',
 			trailingslashit( $this->module_url ) . 'assets/js/advanced-card-checkout-block.js',
-			array(),
+			array( 'wp-i18n' ),
 			$this->version,
 			true
+		);
+
+		wp_set_script_translations(
+			'ppcp-advanced-card-checkout-block',
+			'woocommerce-paypal-payments'
 		);
 
 		return array( 'ppcp-advanced-card-checkout-block' );
@@ -110,6 +115,7 @@ class AdvancedCardPaymentMethod extends AbstractPaymentMethodType {
 	 */
 	public function get_payment_method_data() {
 		$script_data = $this->smart_button_instance()->script_data();
+		$script_data = array_merge( $script_data, array( 'is_user_logged_in' => is_user_logged_in() ) );
 
 		return array(
 			'id'                  => $this->name,

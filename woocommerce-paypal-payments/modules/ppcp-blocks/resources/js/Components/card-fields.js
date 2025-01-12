@@ -3,7 +3,10 @@ import { useEffect, useState } from '@wordpress/element';
 import {
 	PayPalScriptProvider,
 	PayPalCardFieldsProvider,
-	PayPalCardFieldsForm,
+	PayPalNameField,
+	PayPalNumberField,
+	PayPalExpiryField,
+	PayPalCVVField,
 } from '@paypal/react-paypal-js';
 
 import { CheckoutHandler } from './checkout-handler';
@@ -14,12 +17,9 @@ import {
 	onApproveSavePayment,
 } from '../card-fields-config';
 import { cartHasSubscriptionProducts } from '../Helper/Subscription';
+import { __ } from '@wordpress/i18n';
 
-export function CardFields( {
-	config,
-	eventRegistration,
-	emitResponse,
-} ) {
+export function CardFields( { config, eventRegistration, emitResponse } ) {
 	const { onPaymentSetup } = eventRegistration;
 	const { responseTypes } = emitResponse;
 
@@ -92,7 +92,36 @@ export function CardFields( {
 						console.error( err );
 					} }
 				>
-					<PayPalCardFieldsForm />
+					<PayPalNameField
+						placeholder={ __(
+							'Cardholder Name (optional)',
+							'woocommerce-paypal-payments'
+						) }
+					/>
+					<PayPalNumberField
+						placeholder={ __(
+							'Card number',
+							'woocommerce-paypal-payments'
+						) }
+					/>
+					<div style={ { display: 'flex', width: '100%' } }>
+						<div style={ { width: '100%' } }>
+							<PayPalExpiryField
+								placeholder={ __(
+									'MM / YY',
+									'woocommerce-paypal-payments'
+								) }
+							/>
+						</div>
+						<div style={ { width: '100%' } }>
+							<PayPalCVVField
+								placeholder={ __(
+									'CVV',
+									'woocommerce-paypal-payments'
+								) }
+							/>
+						</div>
+					</div>
 					<CheckoutHandler
 						getCardFieldsForm={ getCardFieldsForm }
 						getSavePayment={ getSavePayment }
